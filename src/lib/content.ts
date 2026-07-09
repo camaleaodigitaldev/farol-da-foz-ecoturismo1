@@ -231,7 +231,7 @@ export const defaultContent: SiteContent = {
       duration: 'Aprox. 3h30',
       group: 'Grupos pequenos',
       schedule: '09h e 14h',
-      min: '6 pessoas (ou valor equivalente)',
+      min: '3 pessoas (ou valor equivalente)',
       short:
         'A opção mais completa: vá por terra em superbuggy ou L-200 e volte por água em barco (ou vice-versa), navegando os últimos quilômetros do Velho Chico entre ilhas.',
       long:
