@@ -443,6 +443,12 @@ function Editor({ session }: { session: Session }) {
               </div>
               <Field label="WhatsApp global (só números, ex: 5582999751975)" value={draft.settings.whatsapp} onChange={(v) => patch('settings', { ...draft.settings, whatsapp: v })} />
               <Field label="E-mail" value={draft.settings.email} onChange={(v) => patch('settings', { ...draft.settings, email: v })} />
+              <TextArea
+                label="Política de cancelamento (aparece no formulário de pré-reserva)"
+                value={draft.settings.cancellationPolicy}
+                onChange={(v) => patch('settings', { ...draft.settings, cancellationPolicy: v })}
+                rows={10}
+              />
               <ImageField label="Logo (versão clara, sobre o hero)" value={draft.settings.logoLight} onChange={(v) => patch('settings', { ...draft.settings, logoLight: v })} />
               <ImageField label="Logo (versão escura, header rolado)" value={draft.settings.logoDark} onChange={(v) => patch('settings', { ...draft.settings, logoDark: v })} />
             </div>

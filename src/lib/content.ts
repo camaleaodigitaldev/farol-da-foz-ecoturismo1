@@ -13,6 +13,9 @@ export interface Settings {
   // When true, the "Reservar" buttons open the pre-reservation form instead of
   // going straight to WhatsApp. Defaults to false (current behaviour).
   bookingEnabled: boolean
+  // Cancellation policy shown in the booking form (a checkbox opens it in a
+  // popup and must be accepted before submitting). Editable in the admin.
+  cancellationPolicy: string
 }
 
 export interface Hero {
@@ -132,6 +135,18 @@ export const defaultContent: SiteContent = {
     whatsapp: '5582999751975',
     email: 'faroldafoztur@hotmail.com',
     bookingEnabled: false,
+    cancellationPolicy: [
+      'Esta é uma PRÉ-RESERVA e não garante a vaga até a confirmação e o pagamento, feitos pelo WhatsApp.',
+      '',
+      'Cancelamento ou remarcação:',
+      '• Com mais de 48h de antecedência: reagendamento sem custo ou reembolso integral de valores já pagos.',
+      '• Entre 48h e 24h de antecedência: reagendamento conforme disponibilidade.',
+      '• Com menos de 24h de antecedência ou não comparecimento: sem reembolso.',
+      '',
+      'Condições climáticas: se o passeio não puder ser realizado com segurança por causa do tempo, ele será remarcado sem custo adicional.',
+      '',
+      'Ao enviar a pré-reserva, você declara estar de acordo com estas condições.',
+    ].join('\n'),
   },
   hero: {
     label: 'Foz do Rio São Francisco · Piaçabuçu · Alagoas',

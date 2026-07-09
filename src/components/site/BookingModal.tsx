@@ -29,6 +29,8 @@ export default function BookingModal() {
   const [notes, setNotes] = useState('')
   const [company, setCompany] = useState('') // honeypot (should stay empty)
   const [openedAt, setOpenedAt] = useState(0)
+  const [accepted, setAccepted] = useState(false)
+  const [showPolicy, setShowPolicy] = useState(false)
 
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
@@ -46,6 +48,8 @@ export default function BookingModal() {
       setEmail('')
       setNotes('')
       setCompany('')
+      setAccepted(false)
+      setShowPolicy(false)
       setError('')
       setDone(false)
       setSubmitting(false)
@@ -79,6 +83,7 @@ export default function BookingModal() {
     if (!date) return setError('Escolha a data do passeio.')
     if (date < min) return setError('A data deve ser hoje ou no futuro.')
     if (people < 1) return setError('Informe o número de pessoas.')
+    if (!accepted) return setError('É necessário aceitar a política de cancelamento.')
     // honeypot / too-fast bot guard
     if (company.trim() || Date.now() - openedAt < 1500) {
       return setError('Não foi possível enviar. Tente novamente.')
@@ -114,6 +119,7 @@ export default function BookingModal() {
   const labelCls = 'mb-1.5 block font-heading text-[13px] font-semibold text-navy'
 
   return (
+    <>
     <div className="fixed inset-0 z-[90] flex items-end justify-center bg-navy/60 p-0 sm:items-center sm:p-4" onClick={closeBooking}>
       <div
         className="max-h-[92vh] w-full max-w-[520px] overflow-y-auto rounded-t-3xl bg-cream p-6 shadow-2xl sm:rounded-3xl"
@@ -257,6 +263,26 @@ export default function BookingModal() {
               className="absolute left-[-9999px] h-0 w-0 opacity-0"
             />
 
+            <label className="flex cursor-pointer items-start gap-2.5 font-body text-[13px] text-[#4f5f72]">
+              <input
+                type="checkbox"
+                checked={accepted}
+                onChange={(e) => setAccepted(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-[#2f8f6b]"
+              />
+              <span>
+                Li e aceito a{' '}
+                <button
+                  type="button"
+                  onClick={() => setShowPolicy(true)}
+                  className="font-semibold text-eco underline underline-offset-2"
+                >
+                  política de cancelamento
+                </button>
+                .
+              </span>
+            </label>
+
             {error && <p className="font-body text-sm text-red-500">{error}</p>}
 
             <button
@@ -273,5 +299,38 @@ export default function BookingModal() {
         )}
       </div>
     </div>
+
+    {/* Cancellation policy popup (renders above the booking modal) */}
+    {showPolicy && (
+      <div
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-navy/70 p-4"
+        onClick={() => setShowPolicy(false)}
+      >
+        <div
+          className="max-h-[85vh] w-full max-w-[480px] overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="mb-4 flex items-start justify-between gap-4">
+            <h3 className="font-heading text-lg font-bold text-navy">Política de cancelamento</h3>
+            <button onClick={() => setShowPolicy(false)} aria-label="Fechar" className="shrink-0 text-navy hover:text-gold-text">
+              <Close />
+            </button>
+          </div>
+          <p className="whitespace-pre-line font-body text-sm leading-[1.7] text-[#42556b]">
+            {content.settings.cancellationPolicy}
+          </p>
+          <button
+            onClick={() => {
+              setAccepted(true)
+              setShowPolicy(false)
+            }}
+            className="mt-6 w-full rounded-full bg-gold px-6 py-3 font-heading font-bold text-navy transition hover:bg-[#ffbb1a]"
+          >
+            Li e aceito
+          </button>
+        </div>
+      </div>
+    )}
+    </>
   )
 }
