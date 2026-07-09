@@ -1,4 +1,45 @@
-# Handoff: Site Farol da Foz Ecoturismo + Painel Admin
+# Farol da Foz Ecoturismo — Site + Painel Admin
+
+Site institucional da **Farol da Foz Ecoturismo** (passeios de ecoturismo na foz
+do Rio São Francisco, Piaçabuçu/AL) com **Painel Admin** para o dono gerir todo o
+conteúdo, sem conhecimento técnico.
+
+## Stack
+- **React + Vite + TypeScript + Tailwind CSS**
+- **Supabase** — conteúdo do site (tabela `site_content`, JSON único) + Storage
+  (bucket `media` para imagens) + Auth (login do painel).
+
+## Como rodar localmente
+```bash
+npm install
+npm run dev        # http://localhost:5173
+npm run build      # gera dist/ para produção
+npm run preview    # pré-visualiza o build
+```
+As chaves públicas do Supabase já vêm em `.env` (são seguras para o front-end).
+
+## Estrutura
+- `src/pages/SitePage.tsx` — site público (página única com âncoras + overlays).
+- `src/pages/AdminPage.tsx` — painel admin em `/admin` (login + edição).
+- `src/components/site/*` — seções do site (Hero, Passeios, Frota, etc.).
+- `src/lib/content.ts` — modelo de dados + conteúdo padrão (usado como fallback).
+- `public/assets/*` — imagens.
+
+## Painel Admin (`/admin`)
+- **Login:** e-mail `isaiaschristian7@gmail.com` / senha temporária `FarolDaFoz2026`
+  (troque a senha após o primeiro acesso, em Supabase → Authentication).
+- Edite qualquer seção e clique em **Publicar** — o conteúdo é salvo no Supabase e
+  o site passa a ler de lá. Imagens podem ser enviadas direto pelo painel.
+- Enquanto nada é publicado, o site mostra o conteúdo padrão de `content.ts`.
+
+## Deploy
+Qualquer host de sites estáticos (Vercel, Netlify, Cloudflare Pages):
+build `npm run build`, pasta de saída `dist`, e as variáveis do `.env`. Configure
+o host para servir `index.html` em todas as rotas (SPA) para `/admin` funcionar.
+
+---
+
+# Handoff original (referência de design)
 
 ## Visão geral
 Reconstrução completa do site institucional da **Farol da Foz Ecoturismo** (passeios de ecoturismo na foz do Rio São Francisco, Piaçabuçu/AL) com uma nova identidade visual profissional, **mais um Painel Admin** para o dono (sem conhecimento técnico) gerir todo o conteúdo.
