@@ -158,6 +158,68 @@ export function StringList({
   )
 }
 
+export function NumberField({
+  label,
+  value,
+  onChange,
+  min,
+  max,
+}: {
+  label: string
+  value: number
+  onChange: (v: number) => void
+  min?: number
+  max?: number
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block font-heading text-[13px] font-semibold text-navy">{label}</span>
+      <input
+        type="number"
+        value={value}
+        min={min}
+        max={max}
+        onChange={(e) => onChange(Number(e.target.value) || 0)}
+        className="w-full rounded-[10px] border border-[#dfe3ea] bg-white px-3.5 py-2.5 font-body text-sm text-navy outline-none focus:border-gold"
+      />
+    </label>
+  )
+}
+
+export function Toggle({
+  label,
+  description,
+  value,
+  onChange,
+}: {
+  label: string
+  description?: string
+  value: boolean
+  onChange: (v: boolean) => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onChange(!value)}
+      className="flex w-full items-center justify-between gap-4 rounded-card border border-[#e3e7ee] bg-white p-4 text-left"
+    >
+      <span>
+        <span className="block font-heading text-sm font-bold text-navy">{label}</span>
+        {description && <span className="mt-0.5 block font-body text-xs text-muted">{description}</span>}
+      </span>
+      <span
+        className="relative h-6 w-11 shrink-0 rounded-full transition-colors"
+        style={{ background: value ? '#2f8f6b' : '#cbd3dd' }}
+      >
+        <span
+          className="absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all"
+          style={{ left: value ? '22px' : '2px' }}
+        />
+      </span>
+    </button>
+  )
+}
+
 export function Card({ title, children, onRemove }: { title?: string; children: React.ReactNode; onRemove?: () => void }) {
   return (
     <div className="rounded-card border border-[#e3e7ee] bg-white p-5">

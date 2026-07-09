@@ -10,6 +10,12 @@ export interface Settings {
   logoDark: string
   whatsapp: string // digits only, e.g. "5582999751975"
   email: string
+  // When true, the "Reservar" buttons open the pre-reservation form instead of
+  // going straight to WhatsApp. Defaults to false (current behaviour).
+  bookingEnabled: boolean
+  // Cancellation policy shown in the booking form (a checkbox opens it in a
+  // popup and must be accepted before submitting). Editable in the admin.
+  cancellationPolicy: string
 }
 
 export interface Hero {
@@ -54,7 +60,8 @@ export interface Tour {
 export interface FleetVehicle {
   id: string
   name: string
-  capacity: string
+  capacity: string // display string, e.g. "Até 6 passageiros"
+  seats: number // numeric capacity, used for occupancy math in the admin
   text: string
   images: string[]
 }
@@ -127,6 +134,19 @@ export const defaultContent: SiteContent = {
     logoDark: A('logo-dark.png'),
     whatsapp: '5582999751975',
     email: 'faroldafoztur@hotmail.com',
+    bookingEnabled: false,
+    cancellationPolicy: [
+      'Esta é uma PRÉ-RESERVA e não garante a vaga até a confirmação e o pagamento, feitos pelo WhatsApp.',
+      '',
+      'Cancelamento ou remarcação:',
+      '• Com mais de 48h de antecedência: reagendamento sem custo ou reembolso integral de valores já pagos.',
+      '• Entre 48h e 24h de antecedência: reagendamento conforme disponibilidade.',
+      '• Com menos de 24h de antecedência ou não comparecimento: sem reembolso.',
+      '',
+      'Condições climáticas: se o passeio não puder ser realizado com segurança por causa do tempo, ele será remarcado sem custo adicional.',
+      '',
+      'Ao enviar a pré-reserva, você declara estar de acordo com estas condições.',
+    ].join('\n'),
   },
   hero: {
     label: 'Foz do Rio São Francisco · Piaçabuçu · Alagoas',
@@ -244,6 +264,7 @@ export const defaultContent: SiteContent = {
       id: 'carcara',
       name: 'Carcará Superbuggy',
       capacity: 'Até 6 passageiros',
+      seats: 6,
       text: 'Veículo aberto, potente e ideal para encarar as dunas com adrenalina e segurança.',
       images: [A('carcara-superbuggy.jpeg'), A('hero-buggy.png'), A('opt-1.png')],
     },
@@ -251,6 +272,7 @@ export const defaultContent: SiteContent = {
       id: 'cabrita',
       name: 'Cabrita L-200',
       capacity: 'Até 6 passageiros',
+      seats: 6,
       text: 'Robustez e estabilidade para os trechos de areia fofa e o acesso à restinga.',
       images: [A('cabrita-l200.jpeg')],
     },
@@ -258,6 +280,7 @@ export const defaultContent: SiteContent = {
       id: 'capivara',
       name: 'Capivara Ranger',
       capacity: 'Até 10 pessoas',
+      seats: 10,
       text: 'Espaçoso e confortável para grupos maiores que querem viver a foz juntos.',
       images: [A('capivara-ranger.jpeg')],
     },

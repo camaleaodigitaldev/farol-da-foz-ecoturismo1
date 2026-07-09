@@ -1,5 +1,6 @@
 import type { SiteContent } from '../../lib/content'
 import { waLink } from '../../lib/wa'
+import Reveal from '../Reveal'
 
 // A simple accent-tinted marker per feature card (icon library kept minimal).
 function Marker({ accent }: { accent: 'gold' | 'eco' }) {
@@ -20,7 +21,7 @@ export default function Features({ content }: { content: SiteContent }) {
   return (
     <section id="diferenciais" className="bg-white px-5 py-14 sm:px-8 sm:py-24">
       <div className="mx-auto max-w-[1080px]">
-        <div className="mx-auto mb-11 max-w-[720px] text-center sm:mb-16">
+        <Reveal as="div" className="mx-auto mb-11 max-w-[720px] text-center sm:mb-16">
           <span className="mb-3.5 inline-block font-heading text-xs font-semibold uppercase tracking-[.16em] text-gold-warm">
             Pioneiros na Foz do São Francisco
           </span>
@@ -32,15 +33,17 @@ export default function Features({ content }: { content: SiteContent }) {
             são certificados pela <strong className="font-semibold text-[#4a5665]">ABETA</strong> e pelo{' '}
             <strong className="font-semibold text-[#4a5665]">SEBRAE</strong>, com vasta experiência sobre as dunas da região.
           </p>
-        </div>
+        </Reveal>
 
         <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3 md:gap-3">
-          {content.features.map((f) => (
-            <div key={f.title} className="rounded-[14px] border border-[#eeeae0] bg-white p-4">
-              <Marker accent={f.accent} />
-              <h3 className="mb-1.5 font-heading text-[13.5px] font-semibold leading-tight text-navy">{f.title}</h3>
-              <p className="m-0 font-body text-xs leading-[1.5] text-[#6b7787]">{f.text}</p>
-            </div>
+          {content.features.map((f, i) => (
+            <Reveal key={f.title} delay={i * 80} className="h-full">
+              <div className="h-full rounded-[14px] border border-[#eeeae0] bg-white p-4">
+                <Marker accent={f.accent} />
+                <h3 className="mb-1.5 font-heading text-[13.5px] font-semibold leading-tight text-navy">{f.title}</h3>
+                <p className="m-0 font-body text-xs leading-[1.5] text-[#6b7787]">{f.text}</p>
+              </div>
+            </Reveal>
           ))}
         </div>
 

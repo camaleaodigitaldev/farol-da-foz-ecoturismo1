@@ -3,9 +3,11 @@ import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 import { fetchContent, saveContent } from '../lib/useContent'
 import { defaultContent, type SiteContent, type Tour, type FleetVehicle, type Review, type GalleryItem } from '../lib/content'
-import { Field, TextArea, ImageField, StringList, Card } from '../components/admin/fields'
+import { Field, TextArea, ImageField, StringList, Card, NumberField, Toggle } from '../components/admin/fields'
+import ReservationsPanel from '../components/admin/ReservationsPanel'
 
 const SECTIONS = [
+  { key: 'reservations', label: 'Reservas' },
   { key: 'hero', label: 'Topo (Hero)' },
   { key: 'tours', label: 'Passeios' },
   { key: 'about', label: 'Sobre' },
@@ -163,17 +165,22 @@ function Editor({ session }: { session: Session }) {
               Ver site ↗
             </a>
             <span className="hidden text-xs text-muted md:inline">{session.user.email}</span>
-            <button
-              onClick={publish}
-              disabled={saving}
-              className="rounded-full bg-gold px-6 py-2.5 font-heading text-sm font-bold text-navy transition hover:bg-[#ffbb1a] disabled:opacity-60"
-            >
-              {saving ? 'Publicando…' : saved ? '✓ Publicado' : 'Publicar'}
-            </button>
+            {/* Reservas is live CRUD — no "Publicar" needed there */}
+            {active !== 'reservations' && (
+              <button
+                onClick={publish}
+                disabled={saving}
+                className="rounded-full bg-gold px-6 py-2.5 font-heading text-sm font-bold text-navy transition hover:bg-[#ffbb1a] disabled:opacity-60"
+              >
+                {saving ? 'Publicando…' : saved ? '✓ Publicado' : 'Publicar'}
+              </button>
+            )}
           </div>
         </header>
 
         <main className="mx-auto max-w-3xl px-5 py-8">
+          {active === 'reservations' && <ReservationsPanel fleet={draft.fleet} />}
+
           {active === 'hero' && (
             <div className="space-y-5">
               <Field label="Etiqueta (localização)" value={draft.hero.label} onChange={(v) => patch('hero', { ...draft.hero, label: v })} />
@@ -286,7 +293,10 @@ function Editor({ session }: { session: Session }) {
                   <Card key={v.id} title={v.name || 'Veículo'} onRemove={() => patch('fleet', draft.fleet.filter((_, j) => j !== i))}>
                     <div className="space-y-4">
                       <Field label="Nome" value={v.name} onChange={(x) => set({ name: x })} />
-                      <Field label="Capacidade" value={v.capacity} onChange={(x) => set({ capacity: x })} />
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <Field label="Capacidade (texto exibido)" value={v.capacity} onChange={(x) => set({ capacity: x })} />
+                        <NumberField label="Lugares (usado nas reservas)" value={v.seats ?? 0} min={0} onChange={(x) => set({ seats: x })} />
+                      </div>
                       <TextArea label="Descrição" value={v.text} onChange={(x) => set({ text: x })} rows={2} />
                       <StringList label="Fotos (URLs)" items={v.images} onChange={(x) => set({ images: x })} />
                       <ImageField label="Enviar nova foto (adiciona à lista)" value="" onChange={(url) => url && set({ images: [...v.images, url] })} />
@@ -295,7 +305,7 @@ function Editor({ session }: { session: Session }) {
                 )
               })}
               <button
-                onClick={() => patch('fleet', [...draft.fleet, { id: uid('veh'), name: 'Novo veículo', capacity: '', text: '', images: [] }])}
+                onClick={() => patch('fleet', [...draft.fleet, { id: uid('veh'), name: 'Novo veículo', capacity: '', seats: 0, text: '', images: [] }])}
                 className="rounded-full border border-[#dfe3ea] bg-white px-5 py-2.5 font-heading text-sm font-semibold text-navy hover:border-gold"
               >
                 + Adicionar veículo
@@ -421,11 +431,24 @@ function Editor({ session }: { session: Session }) {
 
           {active === 'settings' && (
             <div className="space-y-5">
+              <Toggle
+                label="Ativar sistema de pré-reserva pelo site"
+                description="Ligado: os botões 'Reservar' abrem o formulário de pré-reserva. Desligado: os botões vão direto para o WhatsApp (como antes)."
+                value={draft.settings.bookingEnabled}
+                onChange={(v) => patch('settings', { ...draft.settings, bookingEnabled: v })}
+              />
               <div className="rounded-card border border-[#f0e6cc] bg-cream-warm p-4 font-body text-sm text-[#7a5a10]">
-                O número do WhatsApp abaixo é usado em <strong>todos os botões de reserva</strong> do site.
+                Lembre-se de clicar em <strong>Publicar</strong> depois de mudar as configurações. O número do WhatsApp
+                abaixo é usado em <strong>todos os botões de reserva</strong> do site.
               </div>
               <Field label="WhatsApp global (só números, ex: 5582999751975)" value={draft.settings.whatsapp} onChange={(v) => patch('settings', { ...draft.settings, whatsapp: v })} />
               <Field label="E-mail" value={draft.settings.email} onChange={(v) => patch('settings', { ...draft.settings, email: v })} />
+              <TextArea
+                label="Política de cancelamento (aparece no formulário de pré-reserva)"
+                value={draft.settings.cancellationPolicy}
+                onChange={(v) => patch('settings', { ...draft.settings, cancellationPolicy: v })}
+                rows={10}
+              />
               <ImageField label="Logo (versão clara, sobre o hero)" value={draft.settings.logoLight} onChange={(v) => patch('settings', { ...draft.settings, logoLight: v })} />
               <ImageField label="Logo (versão escura, header rolado)" value={draft.settings.logoDark} onChange={(v) => patch('settings', { ...draft.settings, logoDark: v })} />
             </div>
