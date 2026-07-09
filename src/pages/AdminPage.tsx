@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 import { fetchContent, saveContent } from '../lib/useContent'
@@ -78,10 +78,35 @@ function Editor({ session }: { session: Session }) {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [mobileNav, setMobileNav] = useState(false)
+  // skips the autosave triggered by the initial fetchContent() load
+  const skipAutosave = useRef(true)
 
   useEffect(() => {
     fetchContent().then(setDraft)
   }, [])
+
+  // Auto-save: persists the draft ~1.2s after the last edit, so the owner
+  // never loses changes by forgetting to click "Publicar" (which remains as
+  // an immediate manual save).
+  useEffect(() => {
+    if (!draft) return
+    if (skipAutosave.current) {
+      skipAutosave.current = false
+      return
+    }
+    const t = setTimeout(async () => {
+      setSaving(true)
+      try {
+        await saveContent(draft)
+        setSaved(true)
+      } catch (e) {
+        console.error('Autosave falhou:', e)
+      } finally {
+        setSaving(false)
+      }
+    }, 1200)
+    return () => clearTimeout(t)
+  }, [draft])
 
   if (!draft) {
     return (
@@ -171,8 +196,9 @@ function Editor({ session }: { session: Session }) {
                 onClick={publish}
                 disabled={saving}
                 className="rounded-full bg-gold px-6 py-2.5 font-heading text-sm font-bold text-navy transition hover:bg-[#ffbb1a] disabled:opacity-60"
+                title="As alterações são salvas automaticamente; este botão salva na hora."
               >
-                {saving ? 'Publicando…' : saved ? '✓ Publicado' : 'Publicar'}
+                {saving ? 'Salvando…' : saved ? '✓ Salvo' : 'Salvar agora'}
               </button>
             )}
           </div>
@@ -438,8 +464,8 @@ function Editor({ session }: { session: Session }) {
                 onChange={(v) => patch('settings', { ...draft.settings, bookingEnabled: v })}
               />
               <div className="rounded-card border border-[#f0e6cc] bg-cream-warm p-4 font-body text-sm text-[#7a5a10]">
-                Lembre-se de clicar em <strong>Publicar</strong> depois de mudar as configurações. O número do WhatsApp
-                abaixo é usado em <strong>todos os botões de reserva</strong> do site.
+                As alterações são <strong>salvas automaticamente</strong>. O número do WhatsApp abaixo é usado em{' '}
+                <strong>todos os botões de reserva</strong> do site.
               </div>
               <Field label="WhatsApp global (só números, ex: 5582999751975)" value={draft.settings.whatsapp} onChange={(v) => patch('settings', { ...draft.settings, whatsapp: v })} />
               <Field label="E-mail" value={draft.settings.email} onChange={(v) => patch('settings', { ...draft.settings, email: v })} />
