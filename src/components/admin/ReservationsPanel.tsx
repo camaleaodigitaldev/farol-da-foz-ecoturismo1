@@ -62,8 +62,12 @@ export default function ReservationsPanel({ fleet }: { fleet: FleetVehicle[] }) 
   const todayIso = toISO(now)
   const [monthView, setMonthView] = useState({ y: now.getFullYear(), m: now.getMonth() })
   const [weekStart, setWeekStart] = useState(() => toISO(startOfWeek(now)))
-  const [selectedDay, setSelectedDay] = useState<string | null>(null)
+  const [slot, setSlot] = useState<{ title: string; items: Reservation[] } | null>(null)
   const [showPast, setShowPast] = useState(false)
+
+  const openSlot = (title: string, items: Reservation[]) => {
+    if (items.length) setSlot({ title, items })
+  }
 
   const totalSeats = useMemo(() => fleet.reduce((s, v) => s + (v.seats || 0), 0), [fleet])
 
@@ -247,17 +251,9 @@ export default function ReservationsPanel({ fleet }: { fleet: FleetVehicle[] }) 
         <span className="font-body text-[11px] text-muted">só confirmados</span>
       </div>
       {agendaMode === 'mensal' ? (
-        <MonthAgenda
-          monthView={monthView}
-          setMonthView={setMonthView}
-          confirmed={confirmed}
-          selectedDay={selectedDay}
-          setSelectedDay={setSelectedDay}
-          fullCard={fullCard}
-          sum={sum}
-        />
+        <MonthAgenda monthView={monthView} setMonthView={setMonthView} confirmed={confirmed} sum={sum} onOpenSlot={openSlot} />
       ) : (
-        <WeekAgenda weekStart={weekStart} setWeekStart={setWeekStart} confirmed={confirmed} totalSeats={totalSeats} />
+        <WeekAgenda weekStart={weekStart} setWeekStart={setWeekStart} confirmed={confirmed} totalSeats={totalSeats} onOpenSlot={openSlot} />
       )}
     </div>
   )
@@ -414,6 +410,50 @@ export default function ReservationsPanel({ fleet }: { fleet: FleetVehicle[] }) 
         </div>
       )}
 
+      {/* ---------------- POP-UP de um dia/saída ---------------- */}
+      {slot && (
+        <div className="fixed inset-0 z-[100] flex items-end justify-center bg-navy/60 p-0 sm:items-center sm:p-4" onClick={() => setSlot(null)}>
+          <div
+            className="max-h-[85vh] w-full max-w-[460px] overflow-y-auto rounded-t-3xl bg-white p-5 shadow-2xl sm:rounded-3xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-start justify-between gap-4">
+              <div>
+                <h3 className="font-heading text-lg font-bold text-navy">{slot.title}</h3>
+                <p className="mt-0.5 font-body text-xs text-muted">
+                  {slot.items.length} {slot.items.length === 1 ? 'passeio' : 'passeios'} · {sum(slot.items)} pessoas
+                </p>
+              </div>
+              <button onClick={() => setSlot(null)} aria-label="Fechar" className="shrink-0 font-heading text-2xl leading-none text-navy hover:text-gold-text">×</button>
+            </div>
+            <div className="space-y-2.5">
+              {slot.items
+                .slice()
+                .sort((a, b) => a.departure.localeCompare(b.departure) || b.people - a.people)
+                .map((r) => (
+                  <div key={r.id} className="rounded-xl border border-[#e3e7ee] bg-cream p-3">
+                    <div className="mb-1 flex items-center justify-between gap-2">
+                      <span className="font-heading text-[15px] font-bold text-navy">{r.customer_name}</span>
+                      <span className="rounded-full bg-[#d8f0e2] px-2.5 py-0.5 font-heading text-[11px] font-bold text-[#0c7b4e]">
+                        {r.people} {r.people === 1 ? 'pessoa' : 'pessoas'}
+                      </span>
+                    </div>
+                    <div className="mb-2 font-body text-[12.5px] text-muted">{r.tour_title} · saída {r.departure}</div>
+                    {r.notes && <p className="mb-2 rounded-lg bg-cream-warm px-2.5 py-1.5 font-body text-[12px] text-[#7a5a10]">{r.notes}</p>}
+                    <a
+                      href={waCustomer(r)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full bg-wa px-4 py-2 font-heading text-[13px] font-bold text-white hover:opacity-95"
+                    >
+                      WhatsApp · {r.phone}
+                    </a>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -423,18 +463,14 @@ function MonthAgenda({
   monthView,
   setMonthView,
   confirmed,
-  selectedDay,
-  setSelectedDay,
-  fullCard,
   sum,
+  onOpenSlot,
 }: {
   monthView: { y: number; m: number }
   setMonthView: (v: { y: number; m: number }) => void
   confirmed: Reservation[]
-  selectedDay: string | null
-  setSelectedDay: (v: string | null) => void
-  fullCard: (r: Reservation) => React.ReactNode
   sum: (l: Reservation[]) => number
+  onOpenSlot: (title: string, items: Reservation[]) => void
 }) {
   const byDate = useMemo(() => {
     const map = new Map<string, Reservation[]>()
@@ -448,65 +484,57 @@ function MonthAgenda({
 
   const firstWeekday = new Date(monthView.y, monthView.m, 1).getDay()
   const daysInMonth = new Date(monthView.y, monthView.m + 1, 0).getDate()
+  const todayIso = toISO(new Date())
   const step = (dir: number) => {
     let m = monthView.m + dir
     let y = monthView.y
     if (m < 0) { m = 11; y-- }
     if (m > 11) { m = 0; y++ }
     setMonthView({ y, m })
-    setSelectedDay(null)
   }
 
-  const dayList = selectedDay ? (byDate.get(selectedDay) ?? []).sort((a, b) => a.departure.localeCompare(b.departure)) : []
-
   return (
-    <div className="space-y-4">
-      <div className="rounded-card border border-[#e3e7ee] bg-white p-4">
-        <div className="mb-3 flex items-center justify-between">
-          <button onClick={() => step(-1)} className="flex h-9 w-9 items-center justify-center rounded-full bg-cream font-heading text-lg text-navy">‹</button>
-          <span className="font-heading text-[15px] font-bold text-navy">{MONTHS[monthView.m]} {monthView.y}</span>
-          <button onClick={() => step(1)} className="flex h-9 w-9 items-center justify-center rounded-full bg-gold font-heading text-lg text-navy">›</button>
-        </div>
-        <div className="mb-1 grid grid-cols-7 text-center">
-          {WEEKDAYS.map((w) => <span key={w} className="py-1 font-heading text-[11px] font-semibold text-muted">{w}</span>)}
-        </div>
-        <div className="grid grid-cols-7 gap-1">
-          {Array.from({ length: firstWeekday }).map((_, i) => <span key={`b${i}`} />)}
-          {Array.from({ length: daysInMonth }).map((_, i) => {
-            const d = i + 1
-            const iso = `${monthView.y}-${pad(monthView.m + 1)}-${pad(d)}`
-            const items = byDate.get(iso) ?? []
-            const people = sum(items)
-            const sel = selectedDay === iso
-            return (
-              <button
-                key={d}
-                onClick={() => setSelectedDay(items.length ? iso : null)}
-                className="flex min-h-[54px] flex-col items-center rounded-lg border p-1 transition"
-                style={{
-                  borderColor: sel ? '#f2a900' : '#eef1f5',
-                  background: items.length ? (sel ? '#fdf6e6' : '#f6fbf8') : '#fff',
-                  cursor: items.length ? 'pointer' : 'default',
-                }}
-              >
-                <span className="font-heading text-[13px] font-bold text-navy">{d}</span>
-                {items.length > 0 && (
-                  <span className="mt-auto rounded-full bg-[#d8f0e2] px-1.5 py-0.5 font-heading text-[10px] font-bold text-[#0c7b4e]">
-                    {items.length}🚙 {people}p
-                  </span>
-                )}
-              </button>
-            )
-          })}
-        </div>
+    <div className="rounded-card border border-[#e3e7ee] bg-white p-4">
+      <div className="mb-3 flex items-center justify-between">
+        <button onClick={() => step(-1)} aria-label="Mês anterior" className="flex h-9 w-9 items-center justify-center rounded-full bg-cream font-heading text-lg text-navy hover:bg-[#f0ece2]">‹</button>
+        <span className="font-heading text-[15px] font-bold text-navy">{MONTHS[monthView.m]} {monthView.y}</span>
+        <button onClick={() => step(1)} aria-label="Próximo mês" className="flex h-9 w-9 items-center justify-center rounded-full bg-gold font-heading text-lg text-navy hover:bg-[#ffbb1a]">›</button>
       </div>
-
-      {selectedDay && dayList.length > 0 && (
-        <div className="space-y-3">
-          <h3 className="font-heading text-sm font-bold text-navy">Passeios de {formatDateBR(selectedDay)}</h3>
-          {dayList.map(fullCard)}
-        </div>
-      )}
+      <div className="mb-1 grid grid-cols-7 text-center">
+        {WEEKDAYS.map((w) => <span key={w} className="py-1 font-heading text-[11px] font-semibold text-muted">{w}</span>)}
+      </div>
+      <div className="grid grid-cols-7 gap-1">
+        {Array.from({ length: firstWeekday }).map((_, i) => <span key={`b${i}`} />)}
+        {Array.from({ length: daysInMonth }).map((_, i) => {
+          const d = i + 1
+          const iso = `${monthView.y}-${pad(monthView.m + 1)}-${pad(d)}`
+          const items = byDate.get(iso) ?? []
+          const people = sum(items)
+          const isToday = iso === todayIso
+          const has = items.length > 0
+          return (
+            <button
+              key={d}
+              disabled={!has}
+              onClick={() => onOpenSlot(`Passeios de ${formatDateBR(iso)}`, items)}
+              className="flex min-h-[54px] flex-col items-center rounded-lg border p-1 transition disabled:cursor-default"
+              style={{
+                borderColor: isToday ? '#1a2b3d' : '#eef1f5',
+                background: has ? '#f6fbf8' : '#fff',
+                cursor: has ? 'pointer' : 'default',
+              }}
+            >
+              <span className="font-heading text-[13px] font-bold text-navy">{d}</span>
+              {has && (
+                <span className="mt-auto rounded-full bg-[#d8f0e2] px-1.5 py-0.5 font-heading text-[10px] font-bold text-[#0c7b4e]">
+                  {items.length}🚙 {people}p
+                </span>
+              )}
+            </button>
+          )
+        })}
+      </div>
+      <p className="mt-2 font-body text-[11.5px] text-muted">Toque em um dia com passeios para ver a lista.</p>
     </div>
   )
 }
@@ -517,11 +545,13 @@ function WeekAgenda({
   setWeekStart,
   confirmed,
   totalSeats,
+  onOpenSlot,
 }: {
   weekStart: string
   setWeekStart: (v: string) => void
   confirmed: Reservation[]
   totalSeats: number
+  onOpenSlot: (title: string, items: Reservation[]) => void
 }) {
   const start = fromISO(weekStart)
   const days = Array.from({ length: 7 }).map((_, i) => addDays(start, i))
@@ -585,16 +615,20 @@ function WeekAgenda({
                 const items = cell(iso, dep)
                 const ppl = sumPeople(items)
                 const full = totalSeats > 0 && ppl >= totalSeats
+                const has = items.length > 0
                 return (
-                  <div
+                  <button
                     key={iso}
-                    className="min-h-[58px] rounded-xl p-1.5"
+                    type="button"
+                    disabled={!has}
+                    onClick={() => onOpenSlot(`${shortBR(iso)} · saída ${dep}`, items)}
+                    className="min-h-[58px] rounded-xl p-1.5 text-left transition disabled:cursor-default"
                     style={{
-                      background: items.length ? '#f6fbf8' : isToday ? '#fbfcfe' : '#fafbfc',
-                      border: `1px solid ${items.length ? '#d8ece1' : '#eef1f5'}`,
+                      background: has ? '#f6fbf8' : isToday ? '#fbfcfe' : '#fafbfc',
+                      border: `1px solid ${has ? '#d8ece1' : '#eef1f5'}`,
                     }}
                   >
-                    {items.length > 0 && (
+                    {has && (
                       <div className="mb-1 flex items-center justify-between">
                         <span className="font-heading text-[9.5px] font-bold uppercase text-[#8592a3]">{items.length} passeio{items.length > 1 ? 's' : ''}</span>
                         <span className="font-heading text-[10px] font-bold" style={{ color: full ? '#a5342b' : '#0c7b4e' }}>{ppl}/{totalSeats || '—'}</span>
@@ -602,32 +636,25 @@ function WeekAgenda({
                     )}
                     <div className="space-y-1">
                       {items.map((r) => (
-                        <a
+                        <div
                           key={r.id}
-                          href={waCustomer(r)}
-                          target="_blank"
-                          rel="noreferrer"
-                          title={`${r.customer_name} · ${r.people} pessoas · ${r.phone} · ${r.tour_title}`}
-                          className="flex items-center gap-1.5 rounded-lg bg-white px-1.5 py-1 font-body text-[11px] leading-tight shadow-sm transition hover:bg-[#eaf5ef]"
+                          className="flex items-center gap-1.5 rounded-lg bg-white px-1.5 py-1 font-body text-[11px] leading-tight shadow-sm"
                         >
                           <span className="flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full bg-[#d8f0e2] px-1 font-heading text-[9.5px] font-bold text-[#0c7b4e]">
                             {r.people}
                           </span>
-                          <span className="min-w-0 flex-1">
-                            <span className="block truncate font-heading font-bold text-navy">{r.customer_name}</span>
-                            <span className="block truncate text-eco">{r.phone}</span>
-                          </span>
-                        </a>
+                          <span className="block min-w-0 flex-1 truncate font-heading font-bold text-navy">{r.customer_name}</span>
+                        </div>
                       ))}
                     </div>
-                  </div>
+                  </button>
                 )
               })}
             </div>
           ))}
         </div>
       </div>
-      <p className="mt-2 font-body text-[11.5px] text-muted">Toque em uma pessoa para abrir o WhatsApp dela. O número na bolinha é a quantidade de pessoas.</p>
+      <p className="mt-2 font-body text-[11.5px] text-muted">Toque em uma saída para ver a lista com nome e contato. O número na bolinha é a quantidade de pessoas.</p>
     </div>
   )
 }
