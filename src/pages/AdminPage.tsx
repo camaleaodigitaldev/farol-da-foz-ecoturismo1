@@ -74,7 +74,7 @@ function Login() {
 // ------------------------------- Editor -----------------------------------
 function Editor({ session }: { session: Session }) {
   const [draft, setDraft] = useState<SiteContent | null>(null)
-  const [active, setActive] = useState<string>('hero')
+  const [active, setActive] = useState<string>('reservations')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [mobileNav, setMobileNav] = useState(false)
