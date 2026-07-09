@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Montserrat:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:'Montserrat',system-ui,sans-serif;color:#1a2b3d;background:#faf8f3;-webkit-font-smoothing:antialiased}
+  img{display:block;max-width:100%}
+  a{color:#c98a00;text-decoration:none}
+  a:hover{color:#a06d00}
+  @keyframes ffFade{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  @keyframes ffPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+  @keyframes ffBob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+  .ff-navlinks{display:flex}
+  .ff-navcta{display:inline-flex}
+  .ff-burger{display:none}
+  @media(max-width:920px){
+    .ff-navlinks{display:none}
+    .ff-navcta{display:none}
+    .ff-burger{display:inline-flex}
+  }
+  .ff-difgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+  @media(max-width:900px){
+    .ff-difgrid{grid-template-columns:repeat(2,1fr);gap:10px}
+  }
+  .ff-tourgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2.2vw,26px)}
+  @media(max-width:880px){.ff-tourgrid{grid-template-columns:1fr;max-width:440px;margin-left:auto;margin-right:auto}}
+</style>
+<script src="./image-slot.js"></script>
+</helmet>
+
+<div style="min-height:100vh;overflow-x:hidden">
+
+  <!-- ============ HEADER (transparent over hero) ============ -->
+  <header style="position:fixed;top:0;left:0;right:0;z-index:50;transition:background .3s,box-shadow .3s,backdrop-filter .3s;background:{{ headerBg }};box-shadow:{{ headerShadow }};backdrop-filter:{{ headerBlur }}">
+    <div style="max-width:1220px;margin:0 auto;padding:0 clamp(16px,4vw,34px);height:{{ headerH }};display:flex;align-items:center;justify-content:space-between;gap:16px;transition:height .3s">
+      <a href="#topo" style="display:flex;align-items:center"><img src="{{ headerLogo }}" alt="Farol da Foz Ecoturismo" style="height:{{ logoH }};width:auto;transition:height .3s;filter:{{ logoFilter }}"></a>
+      <nav class="ff-navlinks" style="align-items:center;gap:26px;white-space:nowrap">
+        <a href="#passeios" style="font-family:'Poppins';font-weight:600;font-size:14px;color:{{ navColor }};transition:color .3s">Passeios</a>
+        <a href="#sobre" style="font-family:'Poppins';font-weight:600;font-size:14px;color:{{ navColor }};transition:color .3s">Sobre</a>
+        <a href="#frota" style="font-family:'Poppins';font-weight:600;font-size:14px;color:{{ navColor }};transition:color .3s">Frota</a>
+        <a href="#galeria" style="font-family:'Poppins';font-weight:600;font-size:14px;color:{{ navColor }};transition:color .3s">Galeria</a>
+        <a href="#depoimentos" style="font-family:'Poppins';font-weight:600;font-size:14px;color:{{ navColor }};transition:color .3s">Avaliações</a>
+        <a href="#base" style="font-family:'Poppins';font-weight:600;font-size:14px;color:{{ navColor }};transition:color .3s">Nossa Base</a>
+      </nav>
+      <button class="ff-navcta" onClick="{{ waGeneral }}" style="align-items:center;gap:8px;background:#f2a900;color:#1a2b3d;border:none;font-family:'Poppins';font-weight:700;font-size:14px;padding:11px 22px;border-radius:999px;cursor:pointer;box-shadow:0 8px 20px -8px rgba(242,169,0,.8)" style-hover="background:#ffbb1a">Reservar</button>
+      <button class="ff-burger" onClick="{{ toggleMenu }}" aria-label="Menu" style="align-items:center;justify-content:center;width:46px;height:46px;border:none;background:{{ burgerBg }};border-radius:13px;cursor:pointer;transition:background .3s">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{ burgerColor }}" stroke-width="2.3" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section id="topo" style="position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden">
+    <div style="position:absolute;inset:0;background-image:url(assets/hero-buggy.png);background-size:cover;background-position:center;transform:scale(1.05)"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,28,45,.5) 0%,rgba(12,28,45,.18) 34%,rgba(12,28,45,.34) 68%,rgba(12,28,45,.74) 100%)"></div>
+    <div style="position:relative;z-index:2;max-width:1000px;padding:clamp(110px,18vw,150px) clamp(20px,5vw,40px) clamp(120px,16vw,150px);width:100%;text-align:center;color:#fff">
+      <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);color:#fff;font-family:'Poppins';font-weight:600;font-size:clamp(11px,1.6vw,13px);letter-spacing:.03em;padding:8px 16px;border-radius:999px;margin-bottom:24px;border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(6px);animation:ffFade .6s ease both">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="#f0c257"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7m0 9.5A2.5 2.5 0 019.5 9 2.5 2.5 0 0112 6.5 2.5 2.5 0 0114.5 9 2.5 2.5 0 0112 11.5"/></svg>
+        Foz do Rio São Francisco · Piaçabuçu · Alagoas
+      </div>
+      <h1 style="font-family:'Poppins';font-weight:700;font-size:clamp(40px,8vw,88px);line-height:.96;margin:0 0 8px;letter-spacing:-.025em;text-shadow:0 6px 40px rgba(0,0,0,.45);animation:ffFade .6s .08s ease both">Viva a Foz do<br><span style="color:#f0c257">São Francisco</span></h1>
+      <p style="font-family:'Montserrat';font-size:clamp(16px,2.2vw,21px);line-height:1.55;color:rgba(255,255,255,.94);max-width:36ch;margin:18px auto 36px;text-shadow:0 2px 16px rgba(0,0,0,.4);animation:ffFade .6s .16s ease both">Onde o Velho Chico encontra o mar. Dunas, ilhas e cultura em passeios com condutores certificados pela <strong>ABETA</strong> e pelo <strong>SEBRAE</strong>.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:14px;justify-content:center;animation:ffFade .6s .24s ease both">
+        <button onClick="{{ waGeneral }}" style="display:inline-flex;align-items:center;gap:10px;background:#25d366;color:#fff;border:none;font-family:'Poppins';font-weight:700;font-size:clamp(15px,2vw,17px);padding:17px 32px;border-radius:999px;cursor:pointer;box-shadow:0 16px 36px -12px rgba(37,211,102,.7);transition:transform .18s" style-hover="transform:translateY(-2px)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+          Reservar pelo WhatsApp
+        </button>
+        <a href="#passeios" style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.14);color:#fff;border:1.5px solid rgba(255,255,255,.65);font-family:'Poppins';font-weight:600;font-size:clamp(15px,2vw,17px);padding:17px 30px;border-radius:999px;cursor:pointer;backdrop-filter:blur(4px)" style-hover="background:rgba(255,255,255,.24)">Ver os passeios</a>
+      </div>
+    </div>
+    <a href="#passeios" style="position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;color:rgba(255,255,255,.85);animation:ffBob 2.2s ease-in-out infinite">
+      <span style="font-family:'Poppins';font-weight:600;font-size:11px;letter-spacing:.14em;text-transform:uppercase">Explore</span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </a>
+  </section>
+
+  <!-- ============ PASSEIOS (right after hero) ============ -->
+  <section id="passeios" style="padding:clamp(56px,9vw,110px) clamp(20px,5vw,40px);background:linear-gradient(180deg,#faf8f3,#fdf6e6)">
+    <div style="max-width:1200px;margin:0 auto">
+      <div style="text-align:center;max-width:660px;margin:0 auto clamp(38px,5vw,58px)">
+        <span style="display:inline-block;font-family:'Poppins';font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#a06d00;margin-bottom:16px">Nossos Roteiros</span>
+        <h2 style="font-family:'Poppins';font-weight:700;font-size:clamp(28px,4.6vw,46px);line-height:1.05;letter-spacing:-.02em;margin:0 0 12px;color:#1a2b3d">Nossos Passeios</h2>
+        <p style="font-size:clamp(15px,1.8vw,18px);color:#5c6b7e;margin:0">Escolha a sua aventura e reserve agora mesmo pelo WhatsApp.</p>
+      </div>
+      <div class="ff-tourgrid">
+        <sc-for list="{{ tours }}" as="t" hint-placeholder-count="3">
+          <article style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 16px 38px -30px rgba(26,43,61,.4);border:{{ t.border }};display:flex;flex-direction:column;position:relative;transition:transform .22s,box-shadow .22s" style-hover="transform:translateY(-7px);box-shadow:0 36px 62px -30px rgba(26,43,61,.55)">
+            <sc-if value="{{ t.featured }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.92);color:#1a2b3d;font-family:'Poppins';font-weight:600;font-size:10.5px;letter-spacing:.1em;padding:6px 12px;border-radius:6px;z-index:4">MAIS COMPLETO</div>
+            </sc-if>
+            <div style="position:relative;height:212px;overflow:hidden">
+              <img src="{{ t.image }}" alt="{{ t.title }}" style="width:100%;height:100%;object-fit:cover">
+              <div style="position:absolute;top:12px;left:12px;display:inline-flex;align-items:center;gap:6px;background:{{ t.tagBg }};color:{{ t.tagColor }};font-family:'Poppins';font-weight:700;font-size:11.5px;padding:6px 11px;border-radius:7px">{{ t.tag }}</div>
+              <div style="position:absolute;bottom:12px;right:12px;background:rgba(26,43,61,.86);backdrop-filter:blur(4px);color:#fff;font-family:'Poppins';font-weight:700;font-size:12px;padding:6px 12px;border-radius:999px">a partir de <span style="color:#ffc02e">R$ {{ t.priceNum }}</span></div>
+            </div>
+            <div style="padding:22px;display:flex;flex-direction:column;flex:1">
+              <h3 style="font-family:'Poppins';font-weight:700;font-size:20px;margin:0 0 8px;color:#1a2b3d">{{ t.title }}</h3>
+              <p style="font-size:14.5px;line-height:1.6;color:#5c6b7e;margin:0 0 16px;flex:1">{{ t.short }}</p>
+              <div style="display:flex;gap:16px;margin-bottom:18px;font-size:12.5px;color:#5c6b7e;font-weight:600">
+                <span style="display:inline-flex;align-items:center;gap:5px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c98a00" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>{{ t.duration }}</span>
+                <span style="display:inline-flex;align-items:center;gap:5px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c98a00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>{{ t.group }}</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:9px">
+                <button onClick="{{ t.reserve }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#25d366;color:#fff;border:none;font-family:'Poppins';font-weight:700;font-size:14.5px;padding:13px;border-radius:12px;cursor:pointer" style-hover="opacity:.92">Reservar agora</button>
+                <button onClick="{{ t.details }}" style="background:transparent;border:1.5px solid #ead9ab;color:#a06d00;font-family:'Poppins';font-weight:700;font-size:13px;padding:10px;border-radius:12px;cursor:pointer" style-hover="border-color:#f2a900;background:#fdf6e6">Ver detalhes e preços</button>
+              </div>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ APRESENTAÇÃO ============ -->
+  <section id="sobre" style="padding:clamp(56px,9vw,110px) clamp(20px,5vw,40px);background:#faf8f3">
+    <div style="max-width:1140px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:clamp(32px,5vw,64px);align-items:center">
+      <div>
+        <img src="assets/casal-praia.jpeg" alt="Foz do Rio São Francisco" style="width:100%;height:clamp(320px,44vw,500px);object-fit:cover;border-radius:16px;box-shadow:0 24px 50px -34px rgba(26,43,61,.45)">
+      </div>
+      <div>
+        <span style="display:inline-block;font-family:'Poppins';font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#a06d00;margin-bottom:18px">Nossa História</span>
+        <h2 style="font-family:'Poppins';font-weight:700;font-size:clamp(26px,4vw,42px);line-height:1.08;letter-spacing:-.02em;margin:0 0 20px;color:#1a2b3d">Uma experiência além do que os olhos podem ver</h2>
+        <div style="display:flex;flex-direction:column;gap:14px;font-size:clamp(15px,1.7vw,17px);line-height:1.7;color:#4f5f72">
+          <p style="margin:0">Imagine conhecer a foz do Rio São Francisco de um jeito que vai muito além do que os olhos podem ver. Com a Farol da Foz Ecoturismo, você não faz apenas um passeio… você vive uma experiência completa.</p>
+          <p style="margin:0">Somos uma empresa pioneira, com anos de história e profundo conhecimento da região. Nossos condutores são capacitados e apaixonados pelo que fazem, prontos para te guiar por cada detalhe desse lugar tão único.</p>
+          <sc-if value="{{ expanded }}" hint-placeholder-val="{{ false }}">
+            <p style="margin:0">Aqui, você não apenas contempla paisagens deslumbrantes… você entende a importância do Velho Chico, sente a força da natureza e se conecta com a cultura local de forma verdadeira.</p>
+            <p style="margin:0">E para que sua experiência seja completa do início ao fim, oferecemos toda a estrutura que você merece: base de apoio com estacionamento privativo gratuito, duchas reservadas, sanitários, além de loja de moda praia e conveniência para seu total comodidade.</p>
+            <p style="margin:0">Escolher a Farol da Foz é escolher segurança, qualidade e uma vivência inesquecível. Porque a foz do Rio São Francisco não é só um destino… é uma história esperando para ser sentida.</p>
+          </sc-if>
+        </div>
+        <button onClick="{{ toggleText }}" style="margin-top:24px;display:inline-flex;align-items:center;gap:8px;background:transparent;border:1.5px solid #f2a900;color:#a06d00;font-family:'Poppins';font-weight:700;font-size:14px;padding:12px 22px;border-radius:999px;cursor:pointer" style-hover="background:#f2a900;color:#1a2b3d">
+          <sc-if value="{{ expanded }}" hint-placeholder-val="{{ false }}"><span>Ver menos</span></sc-if>
+          <sc-if value="{{ collapsed }}" hint-placeholder-val="{{ true }}"><span>Ver mais</span></sc-if>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DIFERENCIAIS ============ -->
+  <section id="diferenciais" style="padding:clamp(56px,9vw,110px) clamp(20px,5vw,40px);background:#ffffff">
+    <div style="max-width:1080px;margin:0 auto">
+      <div style="text-align:center;max-width:720px;margin:0 auto clamp(44px,6vw,64px)">
+        <span style="display:inline-block;font-family:'Poppins';font-weight:600;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#b8862f;margin-bottom:14px">Pioneiros na Foz do São Francisco</span>
+        <h2 style="font-family:'Poppins';font-weight:700;font-size:clamp(26px,4vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 16px;color:#1a2b3d">Garantindo segurança e emoção em cada etapa do passeio</h2>
+        <p style="font-size:clamp(15px,1.7vw,17px);line-height:1.7;color:#6b7787;margin:0">A Farol da Foz foi a primeira empresa de ecoturismo estruturada na foz do rio São Francisco. Nossos condutores são certificados pela <strong style="color:#4a5665;font-weight:600">ABETA</strong> e pelo <strong style="color:#4a5665;font-weight:600">SEBRAE</strong>, com vasta experiência sobre as dunas da região.</p>
+      </div>
+      <div class="ff-difgrid">
+        <div style="padding:18px 15px;border:1px solid #eeeae0;border-radius:14px;background:#fff">
+          <div style="width:38px;height:38px;border-radius:10px;background:#f7f2e6;display:flex;align-items:center;justify-content:center;color:#b8862f;margin-bottom:13px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h16M6 21V9l6-5 6 5v12"/><path d="M12 4V2M12 9v3M9.5 12.5L12 10l2.5 2.5"/><circle cx="12" cy="15.5" r="1.6"/></svg></div>
+          <h3 style="font-family:'Poppins';font-weight:600;font-size:13.5px;line-height:1.25;margin:0 0 7px;color:#1a2b3d">Pioneiros na Foz</h3><p style="font-size:12px;line-height:1.5;color:#6b7787;margin:0">Fomos os primeiros a estruturar passeios de ecoturismo na foz do rio São Francisco.</p>
+        </div>
+        <div style="padding:18px 15px;border:1px solid #eeeae0;border-radius:14px;background:#fff">
+          <div style="width:38px;height:38px;border-radius:10px;background:#f7f2e6;display:flex;align-items:center;justify-content:center;color:#b8862f;margin-bottom:13px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M9 14.3L8 22l4-2.2L16 22l-1-7.7"/><path d="M9.5 9l1.8 1.8L14.5 7.4"/></svg></div>
+          <h3 style="font-family:'Poppins';font-weight:600;font-size:13.5px;line-height:1.25;margin:0 0 7px;color:#1a2b3d">ABETA & SEBRAE</h3><p style="font-size:12px;line-height:1.5;color:#6b7787;margin:0">Condutores capacitados pela ABETA Nacional e pelo SEBRAE, com padrão técnico e segurança.</p>
+        </div>
+        <div style="padding:18px 15px;border:1px solid #eeeae0;border-radius:14px;background:#fff">
+          <div style="width:38px;height:38px;border-radius:10px;background:#f7f2e6;display:flex;align-items:center;justify-content:center;color:#b8862f;margin-bottom:13px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M2 20c3.5-1.5 4.5-10 8.5-10s3.5 7 6.5 7 2.5-4.5 5-5.5"/><circle cx="18" cy="6" r="2.4"/></svg></div>
+          <h3 style="font-family:'Poppins';font-weight:600;font-size:13.5px;line-height:1.25;margin:0 0 7px;color:#1a2b3d">Experientes em Dunas</h3><p style="font-size:12px;line-height:1.5;color:#6b7787;margin:0">Vasta experiência na condução off-road sobre as dunas da região.</p>
+        </div>
+        <div style="padding:18px 15px;border:1px solid #eeeae0;border-radius:14px;background:#fff">
+          <div style="width:38px;height:38px;border-radius:10px;background:#eaf3ee;display:flex;align-items:center;justify-content:center;color:#2f8f6b;margin-bottom:13px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 019.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg></div>
+          <h3 style="font-family:'Poppins';font-weight:600;font-size:13.5px;line-height:1.25;margin:0 0 7px;color:#1a2b3d">Ecoturismo Responsável</h3><p style="font-size:12px;line-height:1.5;color:#6b7787;margin:0">Uma atividade que respeita e preserva o ecossistema único da foz.</p>
+        </div>
+        <div style="padding:18px 15px;border:1px solid #eeeae0;border-radius:14px;background:#fff">
+          <div style="width:38px;height:38px;border-radius:10px;background:#f7f2e6;display:flex;align-items:center;justify-content:center;color:#b8862f;margin-bottom:13px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/></svg></div>
+          <h3 style="font-family:'Poppins';font-weight:600;font-size:13.5px;line-height:1.25;margin:0 0 7px;color:#1a2b3d">Grupos Pequenos</h3><p style="font-size:12px;line-height:1.5;color:#6b7787;margin:0">Atendimento personalizado em grupos reduzidos, com mais atenção e segurança.</p>
+        </div>
+        <div style="padding:18px 15px;border:1px solid #eeeae0;border-radius:14px;background:#fff">
+          <div style="width:38px;height:38px;border-radius:10px;background:#eaf3ee;display:flex;align-items:center;justify-content:center;color:#2f8f6b;margin-bottom:13px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <h3 style="font-family:'Poppins';font-weight:600;font-size:13.5px;line-height:1.25;margin:0 0 7px;color:#1a2b3d">Piaçabuçu · Alagoas</h3><p style="font-size:12px;line-height:1.5;color:#6b7787;margin:0">A 140 km de Maceió, na porta de entrada da foz do São Francisco.</p>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:clamp(40px,5vw,56px);display:flex;flex-wrap:wrap;gap:14px;justify-content:center">
+        <button onClick="{{ waGeneral }}" style="display:inline-flex;align-items:center;gap:9px;background:#25d366;color:#fff;border:none;font-family:'Poppins';font-weight:700;font-size:15px;padding:15px 28px;border-radius:999px;cursor:pointer;box-shadow:0 14px 30px -12px rgba(37,211,102,.6)" style-hover="transform:translateY(-2px)">Tirar dúvidas no WhatsApp</button>
+        <a href="#passeios" style="display:inline-flex;align-items:center;gap:9px;background:#fff;color:#a06d00;border:1.5px solid #ead9ab;font-family:'Poppins';font-weight:700;font-size:15px;padding:15px 26px;border-radius:999px" style-hover="border-color:#f2a900">Ver os passeios</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FROTA ============ -->
+  <section id="frota" style="padding:clamp(56px,9vw,110px) clamp(20px,5vw,40px);background:linear-gradient(180deg,#22384f,#1a2b3d);color:#fff">
+    <div style="max-width:1140px;margin:0 auto">
+      <div style="text-align:center;max-width:640px;margin:0 auto clamp(38px,5vw,56px)">
+        <span style="display:inline-block;font-family:'Poppins';font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#f0c257;margin-bottom:16px">Nossa Frota</span>
+        <h2 style="font-family:'Poppins';font-weight:700;font-size:clamp(26px,4vw,42px);line-height:1.08;letter-spacing:-.02em;margin:0 0 12px">Veículos confortáveis, adaptados para o off-road</h2>
+        <p style="font-size:clamp(15px,1.7vw,17px);line-height:1.6;color:rgba(255,255,255,.82);margin:0">Preparados para cada terreno — das dunas ao rio São Francisco.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(18px,2.4vw,26px)">
+        <sc-for list="{{ fleet }}" as="v" hint-placeholder-count="3">
+          <article style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:16px;overflow:hidden;backdrop-filter:blur(4px)">
+            <div style="position:relative;height:220px;overflow:hidden;background:#22384f">
+              <img src="{{ v.active }}" alt="{{ v.name }}" style="width:100%;height:100%;object-fit:cover;transition:opacity .25s">
+            </div>
+            <div style="display:flex;gap:8px;padding:10px 12px 0">
+              <sc-for list="{{ v.thumbs }}" as="th" hint-placeholder-count="3">
+                <button onClick="{{ th.select }}" aria-label="Ver foto" style="flex:1;height:52px;padding:0;border:2px solid {{ th.border }};border-radius:10px;overflow:hidden;cursor:pointer;background:none;opacity:{{ th.opacity }};transition:border-color .2s,opacity .2s">
+                  <img src="{{ th.src }}" alt="Miniatura" style="width:100%;height:100%;object-fit:cover;display:block">
+                </button>
+              </sc-for>
+            </div>
+            <div style="padding:16px 22px 22px">
+              <h3 style="font-family:'Poppins';font-weight:700;font-size:19px;margin:0 0 10px">{{ v.name }}</h3>
+              <div style="display:inline-flex;align-items:center;gap:6px;background:#f2a900;color:#1a2b3d;font-family:'Poppins';font-weight:700;font-size:12px;padding:5px 13px;border-radius:999px;margin-bottom:12px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>{{ v.cap }}</div>
+              <p style="font-size:14px;line-height:1.6;color:rgba(255,255,255,.82);margin:0">{{ v.text }}</p>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ NOSSA BASE ============ -->
+  <section id="base" style="padding:clamp(56px,9vw,110px) clamp(20px,5vw,40px);background:#faf8f3">
+    <div style="max-width:1140px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:clamp(32px,5vw,60px);align-items:center">
+      <div>
+        <span style="display:inline-block;font-family:'Poppins';font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#a06d00;margin-bottom:18px">Nossa Base</span>
+        <h2 style="font-family:'Poppins';font-weight:700;font-size:clamp(26px,4vw,42px);line-height:1.08;letter-spacing:-.02em;margin:0 0 24px;color:#1a2b3d">Estrutura completa para a sua aventura</h2>
+        <div style="background:#fff;border:1px solid #f0e6cc;border-radius:16px;padding:22px;margin-bottom:16px;box-shadow:0 16px 38px -30px rgba(26,43,61,.4)">
+          <h3 style="font-family:'Poppins';font-weight:700;font-size:17px;margin:0 0 14px;color:#a06d00;display:flex;align-items:center;gap:8px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg>Base de Apoio</h3>
+          <ul style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:11px 18px">
+            <li style="display:flex;gap:9px;align-items:flex-start;font-size:14px;line-height:1.45;color:#4f5f72"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#f2a900" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M20 6L9 17l-5-5"/></svg>Estacionamento privativo gratuito</li>
+            <li style="display:flex;gap:9px;align-items:flex-start;font-size:14px;line-height:1.45;color:#4f5f72"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#f2a900" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M20 6L9 17l-5-5"/></svg>Vestiários com chuveiros</li>
+            <li style="display:flex;gap:9px;align-items:flex-start;font-size:14px;line-height:1.45;color:#4f5f72"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#f2a900" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M20 6L9 17l-5-5"/></svg>Sanitários e redário</li>
+            <li style="display:flex;gap:9px;align-items:flex-start;font-size:14px;line-height:1.45;color:#4f5f72"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#f2a900" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M20 6L9 17l-5-5"/></svg>Loja de moda praia e conveniência</li>
+          </ul>
+        </div>
+        <div style="background:#fff;border:1px solid #f0e6cc;border-radius:16px;padding:22px;box-shadow:0 16px 38px -30px rgba(26,43,61,.4)">
+          <h3 style="font-family:'Poppins';font-weight:700;font-size:17px;margin:0 0 14px;color:#0c7b6e;display:flex;align-items:center;gap:8px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Segurança</h3>
+          <ul style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:11px 18px">
+            <li style="display:flex;gap:9px;align-items:flex-start;font-size:14px;line-height:1.45;color:#4f5f72"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0e9e63" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M20 6L9 17l-5-5"/></svg>Condutores capacitados ABETA & SEBRAE</li>
+            <li style="display:flex;gap:9px;align-items:flex-start;font-size:14px;line-height:1.45;color:#4f5f72"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0e9e63" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M20 6L9 17l-5-5"/></svg>Acompanhamento em todo o passeio</li>
+            <li style="display:flex;gap:9px;align-items:flex-start;font-size:14px;line-height:1.45;color:#4f5f72"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0e9e63" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M20 6L9 17l-5-5"/></svg>Embarcações regularizadas na Capitania dos Portos</li>
+            <li style="display:flex;gap:9px;align-items:flex-start;font-size:14px;line-height:1.45;color:#4f5f72"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0e9e63" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M20 6L9 17l-5-5"/></svg>Coletes e equipamentos revisados</li>
+          </ul>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:24px">
+          <button onClick="{{ openBase }}" style="display:inline-flex;align-items:center;gap:9px;background:#f2a900;color:#1a2b3d;border:none;font-family:'Poppins';font-weight:700;font-size:15px;padding:15px 26px;border-radius:999px;cursor:pointer;box-shadow:0 14px 30px -12px rgba(242,169,0,.7)" style-hover="background:#ffbb1a">
+            Conheça nossa estrutura
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <button onClick="{{ waGeneral }}" style="display:inline-flex;align-items:center;gap:9px;background:#25d366;color:#fff;border:none;font-family:'Poppins';font-weight:700;font-size:15px;padding:15px 26px;border-radius:999px;cursor:pointer;box-shadow:0 14px 30px -12px rgba(37,211,102,.6)" style-hover="transform:translateY(-2px)">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+            Falar com a gente
+          </button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <img src="assets/base-1.jpeg" alt="Base Farol da Foz" style="grid-column:1/-1;width:100%;height:clamp(180px,26vw,240px);object-fit:cover;border-radius:16px;box-shadow:0 20px 40px -28px rgba(26,43,61,.5)">
+        <img src="assets/skibunda.jpeg" alt="Ski bunda nas dunas" style="width:100%;height:clamp(130px,18vw,168px);object-fit:cover;border-radius:16px">
+        <img src="assets/base-4.jpeg" alt="Estrutura" style="width:100%;height:clamp(130px,18vw,168px);object-fit:cover;border-radius:16px">
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============ DEPOIMENTOS (TripAdvisor) ============ -->
+  <section id="depoimentos" style="padding:clamp(56px,9vw,110px) 0;background:#faf8f3;overflow:hidden">
+    <div style="max-width:1200px;margin:0 auto;padding:0 clamp(20px,5vw,40px);display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;margin-bottom:clamp(24px,4vw,36px)">
+      <div style="max-width:620px">
+        <span style="display:inline-flex;align-items:center;gap:8px;font-family:'Poppins';font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#0c7b5a;margin-bottom:16px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+          Avaliações no TripAdvisor
+        </span>
+        <h2 style="font-family:'Poppins';font-weight:700;font-size:clamp(28px,4.6vw,46px);line-height:1.05;letter-spacing:-.02em;margin:0 0 14px;color:#1a2b3d">Veja a opinião dos viajantes</h2>
+        <div style="display:inline-flex;align-items:center;gap:16px;flex-wrap:wrap;background:#fff;border:1px solid #e6e0d2;border-radius:14px;padding:14px 18px;box-shadow:0 16px 38px -32px rgba(26,43,61,.4)">
+          <span style="font-family:'Poppins';font-weight:700;font-size:38px;line-height:1;color:#1a2b3d">4,9</span>
+          <div>
+            <div style="display:flex;gap:3px;margin-bottom:5px">
+              <span style="width:18px;height:18px;border-radius:50%;background:#00aa6c;display:inline-block"></span>
+              <span style="width:18px;height:18px;border-radius:50%;background:#00aa6c;display:inline-block"></span>
+              <span style="width:18px;height:18px;border-radius:50%;background:#00aa6c;display:inline-block"></span>
+              <span style="width:18px;height:18px;border-radius:50%;background:#00aa6c;display:inline-block"></span>
+              <span style="width:18px;height:18px;border-radius:50%;background:#00aa6c;display:inline-block"></span>
+            </div>
+            <span style="font-family:'Poppins';font-weight:600;font-size:13.5px;color:#5c6b7e"><strong style="color:#00915c">Excelente</strong> · 1.164 avaliações</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:7px;padding-left:16px;border-left:1px solid #ece7db">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="#00aa6c"><circle cx="7.5" cy="12.5" r="4.6" fill="none" stroke="#00aa6c" stroke-width="1.7"/><circle cx="16.5" cy="12.5" r="4.6" fill="none" stroke="#00aa6c" stroke-width="1.7"/><circle cx="7.5" cy="12.5" r="1.7"/><circle cx="16.5" cy="12.5" r="1.7"/><path d="M12 9.2c1-1.1 2.4-1.8 4.5-1.8M12 9.2C11 8.1 9.6 7.4 7.5 7.4" stroke="#00aa6c" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+            <span style="font-family:'Poppins';font-weight:700;font-size:14px;color:#1a2b3d;line-height:1.1">Trip<span style="color:#00aa6c">advisor</span></span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button onClick="{{ reviewsScrollLeft }}" aria-label="Anterior" style="width:48px;height:48px;border-radius:50%;border:1.5px solid #d9d3c4;background:#fff;color:#1a2b3d;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0" style-hover="border-color:#f2a900;color:#a06d00"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button onClick="{{ reviewsScrollRight }}" aria-label="Próximo" style="width:48px;height:48px;border-radius:50%;border:1.5px solid #d9d3c4;background:#fff;color:#1a2b3d;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0" style-hover="border-color:#f2a900;color:#a06d00"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+      </div>
+    </div>
+
+    <div id="reviews-track" style="display:flex;gap:clamp(14px,1.6vw,20px);overflow-x:auto;padding:6px clamp(20px,5vw,40px) 22px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch">
+      <sc-for list="{{ reviews }}" as="r" hint-placeholder-count="6">
+        <article style="scroll-snap-align:start;flex:0 0 auto;width:clamp(280px,80vw,340px);background:#fff;border:1px solid #eee6d6;border-radius:16px;padding:24px;box-shadow:0 18px 38px -30px rgba(26,43,61,.55);display:flex;flex-direction:column">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+            <div style="width:44px;height:44px;border-radius:50%;background:{{ r.color }};color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Poppins';font-weight:700;font-size:18px;flex-shrink:0">{{ r.initial }}</div>
+            <div style="min-width:0">
+              <div style="font-family:'Poppins';font-weight:700;font-size:15px;color:#1a2b3d;line-height:1.2">{{ r.name }}</div>
+              <div style="font-size:12.5px;color:#8593a3;line-height:1.3">{{ r.meta }}</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:3px;margin-bottom:14px">
+            <span style="width:17px;height:17px;border-radius:50%;background:#00aa6c;display:inline-block"></span>
+            <span style="width:17px;height:17px;border-radius:50%;background:#00aa6c;display:inline-block"></span>
+            <span style="width:17px;height:17px;border-radius:50%;background:#00aa6c;display:inline-block"></span>
+            <span style="width:17px;height:17px;border-radius:50%;background:#00aa6c;display:inline-block"></span>
+            <span style="width:17px;height:17px;border-radius:50%;background:#00aa6c;display:inline-block"></span>
+          </div>
+          <p style="font-size:14.5px;line-height:1.65;color:#42556b;margin:0 0 16px;flex:1">{{ r.text }}</p>
+          <div style="border-top:1px solid #f0ece1;padding-top:14px;font-size:13px;color:#5c6b7e;line-height:1.6">
+            <div>Visita em <strong style="color:#1a2b3d;font-weight:600">{{ r.visit }}</strong></div>
+            <div>Viajou <strong style="color:#1a2b3d;font-weight:600">{{ r.trip }}</strong></div>
+          </div>
+        </article>
+      </sc-for>
+      <a href="https://www.tripadvisor.com.br/Attraction_Review-g2529360-d2333778-Reviews-Farol_da_Foz_Ecoturismo-Piacabucu_State_of_Alagoas.html" target="_blank" rel="noopener" style="scroll-snap-align:start;flex:0 0 auto;width:clamp(220px,60vw,280px);border:2px dashed #cdd6df;background:#fff;border-radius:16px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#0c7b5a;font-family:'Poppins';font-weight:700;font-size:15px;text-align:center;padding:24px" style-hover="border-color:#00aa6c;background:#f3fbf7">
+        <div style="width:56px;height:56px;border-radius:50%;background:#e2f4ea;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></div>
+        Ver todas no<br>TripAdvisor
+      </a>
+    </div>
+
+    <div style="max-width:1200px;margin:0 auto;padding:clamp(18px,3vw,26px) clamp(20px,5vw,40px) 0;text-align:center">
+      <a href="https://www.tripadvisor.com.br/Attraction_Review-g2529360-d2333778-Reviews-Farol_da_Foz_Ecoturismo-Piacabucu_State_of_Alagoas.html" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:9px;background:#00aa6c;color:#fff;font-family:'Poppins';font-weight:700;font-size:15px;padding:14px 26px;border-radius:999px" style-hover="background:#00915c">
+        Deixe sua avaliação no TripAdvisor
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ GALERIA (resumo horizontal) ============ -->
+  <section id="galeria" style="padding:clamp(56px,9vw,110px) 0;background:#fdf6e6;overflow:hidden">
+    <div style="max-width:1200px;margin:0 auto;padding:0 clamp(20px,5vw,40px);display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;margin-bottom:clamp(24px,4vw,34px)">
+      <div style="max-width:560px">
+        <span style="display:inline-block;font-family:'Poppins';font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#a06d00;margin-bottom:16px">Galeria</span>
+        <h2 style="font-family:'Poppins';font-weight:700;font-size:clamp(28px,4.6vw,46px);line-height:1.05;letter-spacing:-.02em;margin:0 0 10px;color:#1a2b3d">Momentos na foz do São Francisco</h2>
+        <p style="font-size:clamp(15px,1.8vw,18px);color:#5c6b7e;margin:0">Arraste para o lado para ver um pouco — ou abra a galeria completa.</p>
+      </div>
+      <button onClick="{{ openGallery }}" style="display:inline-flex;align-items:center;gap:9px;background:#1a2b3d;color:#fff;border:none;font-family:'Poppins';font-weight:700;font-size:15px;padding:14px 24px;border-radius:999px;cursor:pointer;flex-shrink:0" style-hover="background:#26405c">
+        Ver galeria completa
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+    <div style="display:flex;gap:clamp(12px,1.5vw,18px);overflow-x:auto;padding:6px clamp(20px,5vw,40px) 20px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch">
+      <sc-for list="{{ galleryStrip }}" as="g" hint-placeholder-count="8">
+        <button onClick="{{ g.open }}" aria-label="Ampliar foto" style="scroll-snap-align:start;flex:0 0 auto;width:clamp(210px,26vw,300px);height:clamp(150px,18vw,210px);padding:0;border:none;cursor:pointer;border-radius:16px;overflow:hidden;position:relative;background:#e9e2cf;box-shadow:0 16px 32px -24px rgba(26,43,61,.6)">
+          <img src="{{ g.src }}" alt="{{ g.alt }}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s" style-hover="transform:scale(1.06)">
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,28,45,0) 55%,rgba(12,28,45,.4));opacity:0;transition:opacity .25s" style-hover="opacity:1"></div>
+        </button>
+      </sc-for>
+      <button onClick="{{ openGallery }}" style="scroll-snap-align:start;flex:0 0 auto;width:clamp(210px,26vw,300px);height:clamp(150px,18vw,210px);border:2px dashed #e0c98a;background:#fff;border-radius:16px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#a06d00;font-family:'Poppins';font-weight:700;font-size:15px" style-hover="border-color:#f2a900;background:#fffdf7">
+        <div style="width:52px;height:52px;border-radius:50%;background:#fdeec4;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        Ver todas as fotos
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ CTA FINAL ============ -->
+  <section style="position:relative;padding:clamp(60px,9vw,120px) clamp(20px,5vw,40px);background:#12212f;color:#fff;text-align:center;overflow:hidden">
+    <div style="position:relative;z-index:2;max-width:640px;margin:0 auto">
+      <h2 style="font-family:'Poppins';font-weight:700;font-size:clamp(28px,4.6vw,48px);line-height:1.05;letter-spacing:-.02em;margin:0 0 16px">Pronto para sua aventura?</h2>
+      <p style="font-size:clamp(15px,1.9vw,19px);line-height:1.6;color:rgba(255,255,255,.75);margin:0 auto 32px;max-width:32ch">Fale com a gente no WhatsApp e escolha o passeio perfeito para você e sua família.</p>
+      <button onClick="{{ waGeneral }}" style="display:inline-flex;align-items:center;gap:11px;background:#25d366;color:#fff;border:none;font-family:'Poppins';font-weight:700;font-size:clamp(16px,2vw,19px);padding:18px 36px;border-radius:999px;cursor:pointer;box-shadow:0 20px 44px -14px rgba(0,0,0,.35)" style-hover="transform:translateY(-3px)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+        Falar no WhatsApp agora
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer style="background:#12212f;color:rgba(255,255,255,.75);padding:clamp(48px,7vw,72px) clamp(20px,5vw,40px) 28px">
+    <div style="max-width:1140px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:36px">
+      <div>
+        <img src="assets/logo-branca.png" alt="Farol da Foz Ecoturismo" style="height:70px;width:auto;margin-bottom:14px">
+        <p style="font-size:14px;line-height:1.6;margin:0 0 16px;max-width:32ch">Ecoturismo na foz do Rio São Francisco. Segurança, qualidade e uma vivência inesquecível em Piaçabuçu, Alagoas.</p>
+        <div style="display:flex;gap:10px">
+          <a href="https://instagram.com/faroldafoz" target="_blank" rel="noopener" style="width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:#fff" style-hover="background:#f2a900;color:#1a2b3d"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="https://facebook.com/faroldafoz" target="_blank" rel="noopener" style="width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:#fff" style-hover="background:#f2a900;color:#1a2b3d"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-family:'Poppins';font-weight:600;font-size:15px;color:#fff;margin:0 0 16px">Contato</h4>
+        <div style="display:flex;flex-direction:column;gap:14px;font-size:14px">
+          <a href="https://wa.me/5582999751975" target="_blank" rel="noopener" style="display:flex;gap:10px;align-items:flex-start;color:rgba(255,255,255,.8)" style-hover="color:#fff"><svg width="18" height="18" viewBox="0 0 24 24" fill="#25d366" style="flex-shrink:0;margin-top:1px"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg><span><strong style="color:#fff;font-weight:600">WhatsApp</strong><br>(82) 99975-1975</span></a>
+          <a href="mailto:faroldafoztur@hotmail.com" style="display:flex;gap:10px;align-items:flex-start;color:rgba(255,255,255,.8)" style-hover="color:#fff"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f2a900" stroke-width="2" style="flex-shrink:0;margin-top:1px"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/></svg><span><strong style="color:#fff;font-weight:600">E-mail</strong><br>faroldafoztur@hotmail.com</span></a>
+          <div style="display:flex;gap:10px;align-items:flex-start"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f2a900" stroke-width="2" style="flex-shrink:0;margin-top:1px"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><span><strong style="color:#fff;font-weight:600">Endereço</strong><br>Piaçabuçu · Alagoas · a 140 km de Maceió</span></div>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-family:'Poppins';font-weight:600;font-size:15px;color:#fff;margin:0 0 16px">Navegação</h4>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:14px">
+          <a href="#topo" style="color:rgba(255,255,255,.8)" style-hover="color:#fff">Início</a>
+          <a href="#passeios" style="color:rgba(255,255,255,.8)" style-hover="color:#fff">Passeios</a>
+          <a href="#sobre" style="color:rgba(255,255,255,.8)" style-hover="color:#fff">Sobre</a>
+          <a href="#diferenciais" style="color:rgba(255,255,255,.8)" style-hover="color:#fff">Diferenciais</a>
+          <a href="#frota" style="color:rgba(255,255,255,.8)" style-hover="color:#fff">Frota</a>
+          <a href="#galeria" style="color:rgba(255,255,255,.8)" style-hover="color:#fff">Galeria</a>
+          <a href="#base" style="color:rgba(255,255,255,.8)" style-hover="color:#fff">Nossa Base</a>
+        </div>
+        <p style="font-family:'Poppins';font-weight:600;font-size:12px;color:rgba(255,255,255,.5);margin:24px 0 12px;letter-spacing:.08em;text-transform:uppercase">Parceiros & Certificações</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+          <div style="background:#fff;border-radius:9px;height:56px;width:96px;display:flex;align-items:center;justify-content:center;padding:8px"><img src="assets/selo-abeta.jpg" alt="ABETA" style="max-height:100%;max-width:100%;width:auto;object-fit:contain"></div>
+          <div style="background:#fff;border-radius:9px;height:56px;width:96px;display:flex;align-items:center;justify-content:center;padding:8px"><img src="assets/selo-aventura-segura.jpg" alt="Aventura Segura" style="max-height:100%;max-width:100%;width:auto;object-fit:contain"></div>
+          <div style="background:#fff;border-radius:9px;height:56px;width:96px;display:flex;align-items:center;justify-content:center;padding:8px"><img src="assets/selo-caminho-aguas.png" alt="Caminho das Águas — Sul de Alagoas" style="max-height:100%;max-width:100%;width:auto;object-fit:contain"></div>
+        </div>
+      </div>
+    </div>
+    <div style="max-width:1140px;margin:36px auto 0;padding-top:22px;border-top:1px solid rgba(255,255,255,.12);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;font-size:13px;color:rgba(255,255,255,.6)">
+      <span>© 2026 Farol da Foz Ecoturismo. Todos os direitos reservados.</span>
+      <span>Desenvolvido por <a href="https://wa.me/5582998439385" target="_blank" rel="noopener" style="color:#f2a900;font-weight:600" style-hover="color:#ffbb1a">Camaleão Digital</a></span>
+    </div>
+  </footer>
+
+  <!-- ============ LIGHTBOX ============ -->
+  <sc-if value="{{ lbOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:90;background:rgba(8,18,30,.92);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:clamp(16px,4vw,48px)">
+      <div onClick="{{ lbClose }}" style="position:absolute;inset:0;cursor:zoom-out"></div>
+      <button onClick="{{ lbClose }}" aria-label="Fechar" style="position:absolute;top:18px;right:18px;z-index:3;width:46px;height:46px;border-radius:50%;border:none;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:rgba(255,255,255,.24)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <button onClick="{{ lbPrev }}" aria-label="Anterior" style="position:absolute;left:clamp(8px,2vw,28px);z-index:3;width:clamp(44px,6vw,56px);height:clamp(44px,6vw,56px);border-radius:50%;border:none;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:#f2a900;color:#1a2b3d"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <button onClick="{{ lbNext }}" aria-label="Próxima" style="position:absolute;right:clamp(8px,2vw,28px);z-index:3;width:clamp(44px,6vw,56px);height:clamp(44px,6vw,56px);border-radius:50%;border:none;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:#f2a900;color:#1a2b3d"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+      <figure style="position:relative;z-index:2;margin:0;max-width:min(1100px,92vw);max-height:86vh;display:flex;flex-direction:column;align-items:center;gap:14px">
+        <img src="{{ lbImg }}" alt="{{ lbAlt }}" style="max-width:100%;max-height:78vh;object-fit:contain;border-radius:12px;box-shadow:0 30px 80px -20px rgba(0,0,0,.7)">
+        <figcaption style="display:flex;align-items:center;gap:14px;color:rgba(255,255,255,.85);font-family:'Poppins';font-weight:500;font-size:14px"><span>{{ lbAlt }}</span><span style="color:rgba(255,255,255,.5)">·</span><span style="color:#f2a900;font-weight:600">{{ lbCounter }}</span></figcaption>
+      </figure>
+    </div>
+  </sc-if>
+
+  <!-- ============ FLOATING WHATSAPP ============ -->
+  <button onClick="{{ waGeneral }}" aria-label="WhatsApp" style="position:fixed;bottom:20px;right:20px;z-index:60;width:58px;height:58px;border-radius:50%;background:#25d366;border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 12px 30px -6px rgba(37,211,102,.7);animation:ffPulse 2.4s ease-in-out infinite">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+  </button>
+
+  <!-- ============ MOBILE MENU ============ -->
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeMenu }}" style="position:fixed;inset:0;z-index:70;background:rgba(12,28,45,.55);backdrop-filter:blur(3px)"></div>
+    <div style="position:fixed;top:0;right:0;bottom:0;z-index:71;width:min(86vw,340px);background:#fff;padding:22px;display:flex;flex-direction:column;gap:4px;box-shadow:-20px 0 50px -20px rgba(0,0,0,.4);animation:ffFade .25s ease both;overflow-y:auto">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <img src="assets/logo-dark.png" alt="Farol da Foz" style="height:40px">
+        <button onClick="{{ closeMenu }}" aria-label="Fechar" style="width:44px;height:44px;border:none;background:#f6f1e6;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a2b3d" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <a href="#passeios" onClick="{{ closeMenu }}" style="font-family:'Poppins';font-weight:600;font-size:16px;color:#1a2b3d;padding:14px 12px;border-radius:12px" style-hover="background:#fdf6e6;color:#a06d00">Passeios</a>
+      <a href="#sobre" onClick="{{ closeMenu }}" style="font-family:'Poppins';font-weight:600;font-size:16px;color:#1a2b3d;padding:14px 12px;border-radius:12px" style-hover="background:#fdf6e6;color:#a06d00">Sobre</a>
+      <a href="#frota" onClick="{{ closeMenu }}" style="font-family:'Poppins';font-weight:600;font-size:16px;color:#1a2b3d;padding:14px 12px;border-radius:12px" style-hover="background:#fdf6e6;color:#a06d00">Frota</a>
+      <a href="#galeria" onClick="{{ closeMenu }}" style="font-family:'Poppins';font-weight:600;font-size:16px;color:#1a2b3d;padding:14px 12px;border-radius:12px" style-hover="background:#fdf6e6;color:#a06d00">Galeria</a>
+      <a href="#depoimentos" onClick="{{ closeMenu }}" style="font-family:'Poppins';font-weight:600;font-size:16px;color:#1a2b3d;padding:14px 12px;border-radius:12px" style-hover="background:#fdf6e6;color:#a06d00">Avaliações</a>
+      <a href="#base" onClick="{{ closeMenu }}" style="font-family:'Poppins';font-weight:600;font-size:16px;color:#1a2b3d;padding:14px 12px;border-radius:12px" style-hover="background:#fdf6e6;color:#a06d00">Nossa Base</a>
+      <button onClick="{{ waGeneral }}" style="margin-top:16px;display:inline-flex;align-items:center;justify-content:center;gap:9px;background:#25d366;color:#fff;border:none;font-family:'Poppins';font-weight:700;font-size:15px;padding:16px;border-radius:14px;cursor:pointer">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+        Reservar pelo WhatsApp
+      </button>
+    </div>
+  </sc-if>
+
+  <!-- ============ GALERIA PAGE (overlay) ============ -->
+  <sc-if value="{{ galleryOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:80;background:#faf8f3;overflow-y:auto">
+      <div style="position:sticky;top:0;z-index:5;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid #f0e6cc">
+        <div style="max-width:1200px;margin:0 auto;padding:12px clamp(16px,4vw,28px);display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <button onClick="{{ closeGallery }}" style="display:inline-flex;align-items:center;gap:8px;background:transparent;border:none;font-family:'Poppins';font-weight:700;font-size:14px;color:#a06d00;cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Voltar ao site</button>
+          <button onClick="{{ waGeneral }}" style="display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#fff;border:none;font-family:'Poppins';font-weight:700;font-size:13.5px;padding:10px 18px;border-radius:999px;cursor:pointer">Reservar</button>
+        </div>
+      </div>
+
+      <div style="max-width:1200px;margin:0 auto;padding:clamp(28px,5vw,48px) clamp(16px,4vw,28px)">
+        <div style="text-align:center;max-width:640px;margin:0 auto clamp(24px,4vw,36px)">
+          <span style="display:inline-block;font-family:'Poppins';font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#a06d00;margin-bottom:16px">Galeria</span>
+          <h1 style="font-family:'Poppins';font-weight:700;font-size:clamp(28px,4.6vw,46px);line-height:1.05;letter-spacing:-.02em;margin:0 0 12px;color:#1a2b3d">Momentos na foz do São Francisco</h1>
+          <p style="font-size:clamp(15px,1.8vw,18px);color:#5c6b7e;margin:0">Dunas, rio, frota e nossa base — clique em qualquer foto para ampliar.</p>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:clamp(26px,4vw,38px)">
+          <sc-for list="{{ galFilters }}" as="f" hint-placeholder-count="5">
+            <button onClick="{{ f.pick }}" style="font-family:'Poppins';font-weight:600;font-size:14px;padding:10px 20px;border-radius:999px;cursor:pointer;background:{{ f.chipBg }};color:{{ f.chipColor }};border:1.5px solid {{ f.chipBorder }};transition:all .2s">{{ f.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(150px,23vw,230px),1fr));gap:clamp(8px,1.2vw,14px)">
+          <sc-for list="{{ galleryItems }}" as="g" hint-placeholder-count="12">
+            <button onClick="{{ g.open }}" aria-label="Ampliar foto" style="position:relative;padding:0;border:none;cursor:pointer;border-radius:16px;overflow:hidden;aspect-ratio:1;background:#e9e2cf;box-shadow:0 12px 28px -22px rgba(26,43,61,.6)">
+              <img src="{{ g.src }}" alt="{{ g.alt }}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s" style-hover="transform:scale(1.07)">
+              <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,28,45,0) 55%,rgba(12,28,45,.45));opacity:0;transition:opacity .25s" style-hover="opacity:1"></div>
+              <div style="position:absolute;right:10px;bottom:10px;width:34px;height:34px;border-radius:50%;background:rgba(242,169,0,.95);color:#1a2b3d;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(6px);transition:all .25s" style-hover="opacity:1;transform:translateY(0)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ BASE / ESTRUTURA PAGE (overlay) ============ -->
+  <sc-if value="{{ baseOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:80;background:#faf8f3;overflow-y:auto">
+      <div style="position:sticky;top:0;z-index:5;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid #f0e6cc">
+        <div style="max-width:1000px;margin:0 auto;padding:12px clamp(16px,4vw,28px);display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <button onClick="{{ closeBase }}" style="display:inline-flex;align-items:center;gap:8px;background:transparent;border:none;font-family:'Poppins';font-weight:700;font-size:14px;color:#a06d00;cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Voltar ao site</button>
+          <button onClick="{{ waGeneral }}" style="display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#fff;border:none;font-family:'Poppins';font-weight:700;font-size:13.5px;padding:10px 18px;border-radius:999px;cursor:pointer">Falar no WhatsApp</button>
+        </div>
+      </div>
+
+      <div style="position:relative;height:clamp(240px,40vw,400px);overflow:hidden">
+        <img src="assets/base-1.jpeg" alt="Base Farol da Foz" style="width:100%;height:100%;object-fit:cover">
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,28,45,.15),rgba(12,28,45,.8))"></div>
+        <div style="position:absolute;bottom:0;left:0;right:0;padding:clamp(20px,4vw,40px)"><div style="max-width:1000px;margin:0 auto">
+          <span style="display:inline-block;background:#f2a900;color:#1a2b3d;font-family:'Poppins';font-weight:700;font-size:12px;padding:5px 13px;border-radius:999px;margin-bottom:12px">Nossa Base · Piaçabuçu</span>
+          <h1 style="font-family:'Poppins';font-weight:700;font-size:clamp(28px,5vw,50px);color:#fff;margin:0;letter-spacing:-.02em;text-shadow:0 3px 20px rgba(0,0,0,.4)">Estrutura completa para a sua aventura</h1>
+        </div></div>
+      </div>
+
+      <div style="max-width:1000px;margin:0 auto;padding:clamp(28px,5vw,52px) clamp(16px,4vw,28px)">
+        <p style="font-size:clamp(16px,1.9vw,19px);line-height:1.75;color:#4f5f72;margin:0 0 clamp(32px,5vw,48px);max-width:64ch">Antes e depois do passeio, você conta com uma base de apoio pensada para o seu conforto e o da sua família. Tudo em um só lugar, na porta de entrada da foz do São Francisco, para que a sua experiência seja completa do início ao fim.</p>
+
+        <h2 style="font-family:'Poppins';font-weight:700;font-size:clamp(22px,3vw,32px);letter-spacing:-.02em;color:#1a2b3d;margin:0 0 22px">O que você encontra na base</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-bottom:clamp(36px,5vw,52px)">
+          <div style="background:#fff;border:1px solid #f0e6cc;border-radius:16px;padding:22px;box-shadow:0 16px 38px -30px rgba(26,43,61,.4)">
+            <div style="width:46px;height:46px;border-radius:13px;background:#fdeec4;display:flex;align-items:center;justify-content:center;color:#a06d00;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l1.5-4.5A2 2 0 018.4 5h7.2a2 2 0 011.9 1.5L19 11M5 11h14v5H5zM5 16v2M19 16v2"/><circle cx="8" cy="13.5" r="1.2"/><circle cx="16" cy="13.5" r="1.2"/></svg></div>
+            <h3 style="font-family:'Poppins';font-weight:700;font-size:16px;margin:0 0 6px;color:#1a2b3d">Estacionamento privativo</h3>
+            <p style="font-size:13.5px;line-height:1.55;color:#5c6b7e;margin:0">Vaga gratuita e reservada para os clientes durante todo o passeio.</p>
+          </div>
+          <div style="background:#fff;border:1px solid #f0e6cc;border-radius:16px;padding:22px;box-shadow:0 16px 38px -30px rgba(26,43,61,.4)">
+            <div style="width:46px;height:46px;border-radius:13px;background:#fdeec4;display:flex;align-items:center;justify-content:center;color:#a06d00;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v4M12 3v4M16 3v4"/><path d="M7 7h10l-1 13H8z"/><path d="M10 11v5M14 11v5"/></svg></div>
+            <h3 style="font-family:'Poppins';font-weight:700;font-size:16px;margin:0 0 6px;color:#1a2b3d">Duchas e vestiários</h3>
+            <p style="font-size:13.5px;line-height:1.55;color:#5c6b7e;margin:0">Chuveiros reservados para se refrescar e trocar de roupa após a aventura.</p>
+          </div>
+          <div style="background:#fff;border:1px solid #f0e6cc;border-radius:16px;padding:22px;box-shadow:0 16px 38px -30px rgba(26,43,61,.4)">
+            <div style="width:46px;height:46px;border-radius:13px;background:#fdeec4;display:flex;align-items:center;justify-content:center;color:#a06d00;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M8 9V6a4 4 0 018 0v3"/></svg></div>
+            <h3 style="font-family:'Poppins';font-weight:700;font-size:16px;margin:0 0 6px;color:#1a2b3d">Sanitários</h3>
+            <p style="font-size:13.5px;line-height:1.55;color:#5c6b7e;margin:0">Banheiros limpos e à disposição na base, para o seu conforto.</p>
+          </div>
+          <div style="background:#fff;border:1px solid #f0e6cc;border-radius:16px;padding:22px;box-shadow:0 16px 38px -30px rgba(26,43,61,.4)">
+            <div style="width:46px;height:46px;border-radius:13px;background:#fdeec4;display:flex;align-items:center;justify-content:center;color:#a06d00;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M4 7l1.5 12h13L20 7M9 11v4M15 11v4"/></svg></div>
+            <h3 style="font-family:'Poppins';font-weight:700;font-size:16px;margin:0 0 6px;color:#1a2b3d">Loja de moda praia</h3>
+            <p style="font-size:13.5px;line-height:1.55;color:#5c6b7e;margin:0">Peças e acessórios de praia para você levar uma lembrança da foz.</p>
+          </div>
+          <div style="background:#fff;border:1px solid #f0e6cc;border-radius:16px;padding:22px;box-shadow:0 16px 38px -30px rgba(26,43,61,.4)">
+            <div style="width:46px;height:46px;border-radius:13px;background:#fdeec4;display:flex;align-items:center;justify-content:center;color:#a06d00;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16l-1 11H5zM9 8V6a3 3 0 016 0v2"/><path d="M9 12h.01M15 12h.01"/></svg></div>
+            <h3 style="font-family:'Poppins';font-weight:700;font-size:16px;margin:0 0 6px;color:#1a2b3d">Conveniência</h3>
+            <p style="font-size:13.5px;line-height:1.55;color:#5c6b7e;margin:0">Bebidas, lanches e itens essenciais antes de embarcar no passeio.</p>
+          </div>
+          <div style="background:#fff;border:1px solid #f0e6cc;border-radius:16px;padding:22px;box-shadow:0 16px 38px -30px rgba(26,43,61,.4)">
+            <div style="width:46px;height:46px;border-radius:13px;background:#fdeec4;display:flex;align-items:center;justify-content:center;color:#a06d00;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8c4-3 12-3 16 0M6 8v6a3 3 0 003 3M18 8v6a3 3 0 01-3 3M9 17h6"/><path d="M12 17v3"/></svg></div>
+            <h3 style="font-family:'Poppins';font-weight:700;font-size:16px;margin:0 0 6px;color:#1a2b3d">Redário para descanso</h3>
+            <p style="font-size:13.5px;line-height:1.55;color:#5c6b7e;margin:0">Redes à sombra para relaxar antes ou depois de viver a foz.</p>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(20px,3vw,32px);align-items:center;background:#fff;border:1px solid #f0e6cc;border-radius:16px;padding:clamp(22px,3vw,32px);margin-bottom:clamp(36px,5vw,52px);box-shadow:0 16px 38px -30px rgba(26,43,61,.4)">
+          <div>
+            <div style="display:inline-flex;align-items:center;gap:8px;background:#e2f4ea;color:#0c7b6e;font-family:'Poppins';font-weight:700;font-size:12px;padding:6px 14px;border-radius:999px;margin-bottom:14px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Segurança em primeiro lugar</div>
+            <h3 style="font-family:'Poppins';font-weight:700;font-size:clamp(20px,2.6vw,28px);letter-spacing:-.02em;color:#1a2b3d;margin:0 0 14px">Você em boas mãos, do começo ao fim</h3>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <sc-for list="{{ baseSafety }}" as="s" hint-placeholder-count="4">
+                <div style="display:flex;gap:11px;align-items:flex-start;font-size:14.5px;line-height:1.55;color:#4f5f72"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0e9e63" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M20 6L9 17l-5-5"/></svg>{{ s }}</div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <img src="assets/base-3.jpeg" alt="Estrutura" style="grid-column:1/-1;width:100%;height:clamp(160px,22vw,210px);object-fit:cover;border-radius:16px">
+            <img src="assets/base-2.jpeg" alt="Estrutura" style="width:100%;height:clamp(110px,15vw,140px);object-fit:cover;border-radius:14px">
+            <img src="assets/base-4.jpeg" alt="Estrutura" style="width:100%;height:clamp(110px,15vw,140px);object-fit:cover;border-radius:14px">
+          </div>
+        </div>
+
+        <h2 style="font-family:'Poppins';font-weight:700;font-size:clamp(22px,3vw,32px);letter-spacing:-.02em;color:#1a2b3d;margin:0 0 22px">Quem cuida da sua experiência</h2>
+            <div style="max-width:1140px;margin:0 auto clamp(36px,5vw,52px);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(20px,3vw,28px);align-items:stretch">
+              <div style="background:#fff;border:1px solid #f0e6cc;border-radius:16px;padding:clamp(26px,4vw,38px);box-shadow:0 16px 38px -30px rgba(26,43,61,.4)">
+                <span style="display:inline-block;font-family:'Poppins';font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#a06d00;margin-bottom:16px">Quem Somos</span>
+                <h3 style="font-family:'Poppins';font-weight:700;font-size:clamp(22px,3.2vw,32px);line-height:1.1;letter-spacing:-.02em;margin:0 0 18px;color:#1a2b3d">Tradição, acolhimento e experiência local na foz</h3>
+                <div style="display:flex;flex-direction:column;gap:13px;font-size:clamp(14px,1.6vw,16px);line-height:1.7;color:#4f5f72">
+                  <p style="margin:0">A Farol da Foz Ecoturismo recebe visitantes em Piaçabuçu com uma estrutura pensada para unir conforto, segurança e vivência verdadeira da região.</p>
+                  <p style="margin:0">Somos uma empresa que valoriza o atendimento próximo, os pequenos grupos e o profundo conhecimento do território, para que cada passeio seja marcante do começo ao fim.</p>
+                  <p style="margin:0">Nossa base física funciona como ponto de apoio completo para quem deseja explorar a foz do rio São Francisco com praticidade e tranquilidade.</p>
+                </div>
+              </div>
+
+              <div style="background:#eef4fb;border:1px solid #d8e6f5;border-radius:16px;padding:clamp(26px,4vw,38px);box-shadow:0 16px 38px -30px rgba(26,43,61,.4)">
+                <div style="display:flex;gap:20px;align-items:center;margin-bottom:22px">
+                  <div style="flex-shrink:0;width:clamp(84px,11vw,108px);height:clamp(84px,11vw,108px);border-radius:50%;overflow:hidden;border:4px solid #fff;box-shadow:0 12px 30px -14px rgba(26,43,61,.55);background:#dbe6f2">
+                    <image-slot id="robrio-goes" shape="circle" placeholder="Foto do Robério" style="width:100%;height:100%"></image-slot>
+                  </div>
+                  <div>
+                    <span style="display:inline-block;font-family:'Poppins';font-weight:700;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#0a5bb4;margin-bottom:6px">Direção</span>
+                    <h3 style="font-family:'Poppins';font-weight:700;font-size:clamp(22px,3vw,30px);line-height:1.05;letter-spacing:-.02em;margin:0 0 4px;color:#1a2b3d">Robério Góes</h3>
+                    <p style="font-family:'Poppins';font-weight:600;font-size:clamp(14px,1.6vw,16px);line-height:1.35;color:#0a5bb4;margin:0">Fundador e Diretor da Farol da Foz Ecoturismo</p>
+                  </div>
+                </div>
+                <p style="font-size:clamp(14px,1.6vw,16px);line-height:1.7;color:#42556b;margin:0 0 22px">Pioneiro no ecoturismo da foz do rio São Francisco, Robério lidera a Farol da Foz com foco em acolhimento, conhecimento da região e experiências seguras em contato com a natureza.</p>
+                <div style="display:flex;flex-direction:column;gap:13px">
+                  <a href="mailto:faroldafoztur@hotmail.com" style="display:flex;gap:11px;align-items:center;font-size:14.5px;color:#42556b" style-hover="color:#0a5bb4"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0a5bb4" stroke-width="2" style="flex-shrink:0"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/></svg>faroldafoztur@hotmail.com</a>
+                  <a href="https://wa.me/5582999751975" target="_blank" rel="noopener" style="display:flex;gap:11px;align-items:center;font-size:14.5px;color:#42556b" style-hover="color:#0a5bb4"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0a5bb4" stroke-width="2" style="flex-shrink:0"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>(82) 99975-1975</a>
+                  <div style="display:flex;gap:11px;align-items:center;font-size:14.5px;color:#42556b"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0a5bb4" stroke-width="2" style="flex-shrink:0"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Piaçabuçu, Alagoas</div>
+                </div>
+              </div>
+            </div>
+
+        <div style="text-align:center;background:#12212f;border-radius:16px;padding:clamp(32px,5vw,48px) clamp(20px,4vw,40px)">
+          <h3 style="font-family:'Poppins';font-weight:700;font-size:clamp(22px,3vw,32px);letter-spacing:-.02em;color:#fff;margin:0 0 10px">Venha viver a foz com a gente</h3>
+          <p style="font-size:clamp(14px,1.7vw,17px);line-height:1.55;color:rgba(255,255,255,.72);margin:0 auto 24px;max-width:44ch">Tire suas dúvidas sobre a base, horários e reservas pelo WhatsApp.</p>
+          <button onClick="{{ waGeneral }}" style="display:inline-flex;align-items:center;gap:10px;background:#25d366;color:#fff;border:none;font-family:'Poppins';font-weight:700;font-size:clamp(15px,2vw,17px);padding:16px 32px;border-radius:999px;cursor:pointer;box-shadow:0 16px 36px -14px rgba(0,0,0,.4)" style-hover="transform:translateY(-2px)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+            Consultar disponibilidade
+          </button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ TOUR DETAIL PAGE (overlay) ============ -->
+  <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:80;background:#faf8f3;overflow-y:auto">
+      <div style="position:sticky;top:0;z-index:5;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid #f0e6cc">
+        <div style="max-width:960px;margin:0 auto;padding:12px clamp(16px,4vw,28px);display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <button onClick="{{ back }}" style="display:inline-flex;align-items:center;gap:8px;background:transparent;border:none;font-family:'Poppins';font-weight:700;font-size:14px;color:#a06d00;cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Voltar aos passeios</button>
+          <button onClick="{{ waCurrent }}" style="display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#fff;border:none;font-family:'Poppins';font-weight:700;font-size:13.5px;padding:10px 18px;border-radius:999px;cursor:pointer">Reservar</button>
+        </div>
+      </div>
+      <div style="position:relative;height:clamp(240px,38vw,380px);overflow:hidden">
+        <sc-if value="{{ tour.image }}" hint-placeholder-val="{{ false }}"><img src="{{ tour.image }}" alt="{{ tour.title }}" style="width:100%;height:100%;object-fit:cover"></sc-if>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,28,45,.12),rgba(12,28,45,.78))"></div>
+        <div style="position:absolute;bottom:0;left:0;right:0;padding:clamp(20px,4vw,36px)"><div style="max-width:960px;margin:0 auto">
+          <span style="display:inline-block;background:#f2a900;color:#1a2b3d;font-family:'Poppins';font-weight:700;font-size:12px;padding:5px 13px;border-radius:999px;margin-bottom:12px">{{ tour.badge }}</span>
+          <h1 style="font-family:'Poppins';font-weight:700;font-size:clamp(28px,5vw,48px);color:#fff;margin:0;letter-spacing:-.02em;text-shadow:0 3px 20px rgba(0,0,0,.4)">{{ tour.title }}</h1>
+        </div></div>
+      </div>
+      <div style="max-width:960px;margin:0 auto;padding:clamp(28px,5vw,48px) clamp(16px,4vw,28px);display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(24px,4vw,44px);align-items:start">
+        <div>
+          <h2 style="font-family:'Poppins';font-weight:700;font-size:22px;margin:0 0 14px;color:#1a2b3d">Sobre o passeio</h2>
+          <p style="font-size:15.5px;line-height:1.75;color:#4f5f72;margin:0 0 26px">{{ tour.long }}</p>
+          <h3 style="font-family:'Poppins';font-weight:700;font-size:17px;margin:0 0 14px;color:#1a2b3d">O que você vai viver</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:9px;margin-bottom:28px">
+            <sc-for list="{{ tourStops }}" as="stop" hint-placeholder-count="5"><span style="background:#fdeec4;color:#a06d00;font-family:'Poppins';font-weight:600;font-size:12.5px;padding:8px 14px;border-radius:999px">{{ stop }}</span></sc-for>
+          </div>
+          <h3 style="font-family:'Poppins';font-weight:700;font-size:17px;margin:0 0 14px;color:#1a2b3d">O que está incluso</h3>
+          <div style="display:flex;flex-direction:column;gap:11px">
+            <sc-for list="{{ tourIncludes }}" as="inc" hint-placeholder-count="4"><div style="display:flex;gap:11px;align-items:flex-start;font-size:14.5px;color:#4f5f72"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0e9e63" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M20 6L9 17l-5-5"/></svg>{{ inc }}</div></sc-for>
+          </div>
+        </div>
+        <div style="position:sticky;top:84px">
+          <div style="background:#fff;border:1px solid #f0e6cc;border-radius:16px;padding:26px;box-shadow:0 24px 50px -30px rgba(26,43,61,.5)">
+            <span style="font-family:'Poppins';font-weight:500;font-size:14px;color:#5c6b7e">A partir de</span>
+            <div style="display:flex;align-items:baseline;gap:4px;margin:2px 0">
+              <span style="font-family:'Poppins';font-weight:600;font-size:20px;color:#0e9e63">R$</span>
+              <span style="font-family:'Poppins';font-weight:700;font-size:46px;line-height:1;color:#0e9e63">{{ tour.priceNum }}</span>
+              <span style="font-family:'Poppins';font-weight:600;font-size:16px;color:#0e9e63">,00</span>
+            </div>
+            <p style="font-size:12.5px;color:#5c6b7e;margin:0 0 4px">por pessoa · PIX/dinheiro</p>
+            <p style="font-size:12.5px;color:#8593a3;margin:0 0 20px">{{ tour.priceCard }} no cartão</p>
+            <div style="display:flex;flex-direction:column;gap:12px;padding:16px 0;border-top:1px solid #f0e6cc;border-bottom:1px solid #f0e6cc;margin-bottom:20px">
+              <div style="display:flex;justify-content:space-between;font-size:14px"><span style="color:#5c6b7e">Duração</span><span style="font-weight:600;color:#1a2b3d">{{ tour.duration }}</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:14px"><span style="color:#5c6b7e">Saídas</span><span style="font-weight:600;color:#1a2b3d;text-align:right">{{ tour.schedule }}</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:14px;gap:12px"><span style="color:#5c6b7e;flex-shrink:0">Saída mínima</span><span style="font-weight:600;color:#1a2b3d;text-align:right">{{ tour.min }}</span></div>
+            </div>
+            <button onClick="{{ waCurrent }}" style="width:100%;display:inline-flex;align-items:center;justify-content:center;gap:9px;background:#25d366;color:#fff;border:none;font-family:'Poppins';font-weight:700;font-size:15.5px;padding:15px;border-radius:14px;cursor:pointer;box-shadow:0 14px 30px -12px rgba(37,211,102,.6)" style-hover="opacity:.92">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+              Reservar pelo WhatsApp
+            </button>
+            <p style="font-size:12px;color:#8593a3;text-align:center;margin:12px 0 0">Operamos mediante reservas</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { menuOpen:false, expanded:false, tourIdx:null, scrolled:false, fleetSel:[0,0,0], baseOpen:false, galFilter:'todos', lbIndex:null, galleryOpen:false };
+
+  get galleryAll(){
+    return [
+      { src:'assets/skibunda.jpeg', cat:'dunas', alt:'Ski bunda nas dunas' },
+      { src:'assets/hero-buggy.png', cat:'dunas', alt:'Buggy nas dunas' },
+      { src:'assets/casal-praia.jpeg', cat:'dunas', alt:'Casal nas Dunas Douradas' },
+      { src:'assets/opt-5.png', cat:'dunas', alt:'Placa Dunas Douradas Piaçabuçu' },
+      { src:'assets/opt-4.png', cat:'dunas', alt:'Caminhada nas dunas ao pôr do sol' },
+      { src:'assets/opt-1.png', cat:'dunas', alt:'Buggy na base' },
+      { src:'assets/passeio-barco.png', cat:'rio', alt:'Passeio de barco no Velho Chico' },
+      { src:'assets/passeio-lancha.png', cat:'rio', alt:'Passeio de lancha' },
+      { src:'assets/opt-6.png', cat:'rio', alt:'Barco entre os coqueiros' },
+      { src:'assets/hero-aerea.jpeg', cat:'rio', alt:'Vista aérea da foz' },
+      { src:'assets/hero-foz.png', cat:'rio', alt:'Foz do São Francisco' },
+      { src:'assets/rota-dourada.png', cat:'rio', alt:'Rota Dourada' },
+      { src:'assets/carcara-superbuggy.jpeg', cat:'frota', alt:'Carcará Superbuggy' },
+      { src:'assets/cabrita-l200.jpeg', cat:'frota', alt:'Cabrita L-200' },
+      { src:'assets/capivara-ranger.jpeg', cat:'frota', alt:'Capivara Ranger' },
+      { src:'assets/base-1.jpeg', cat:'base', alt:'Fachada da base' },
+      { src:'assets/base-2.jpeg', cat:'base', alt:'Estrutura da base' },
+      { src:'assets/base-3.jpeg', cat:'base', alt:'Estrutura da base' },
+      { src:'assets/base-4.jpeg', cat:'base', alt:'Estrutura da base' },
+    ];
+  }
+
+  get reviews(){
+    return [
+      { name:'alan', meta:'7 contribuições', color:'#8a94a6', text:'Confesso que não fui com alta expectativa, imaginei ser como dunas do Rio Grande do Norte, em menor proporção, mas fui surpreendido de forma positiva. Percebi que seria diferente logo no briefing com o senhor Robério. Meu passeio começou muito bem e superou tudo que eu esperava.', visit:'dezembro de 2025', trip:'com amigos' },
+      { name:'Nayane C', meta:'1 contribuição', color:'#c9885f', text:'Passeio inesquecível na foz do rio São Francisco. A paisagem é simplesmente deslumbrante, com o encontro do rio com o mar formando um cenário único e cheio de beleza natural. A experiência é tranquila, bem organizada e enriquecedora, com condutores atenciosos.', visit:'dezembro de 2025', trip:'com a família' },
+      { name:'Leticia O', meta:'1 contribuição', color:'#5f9c7a', text:'Foi uma experiência incrível. Tivemos um imprevisto e quase não conseguimos chegar a tempo, o que seria um pecado perder esse passeio. Todo o caminho é lindo, as informações que recebemos enriquece ainda mais. Valeu super a pena!', visit:'dezembro de 2025', trip:'com a família' },
+      { name:'Fabricio T', meta:'5 contribuições', color:'#6a8fbf', text:'Um passeio sensacional. Onde tivemos o privilégio de ver dunas lindas, o encontro do rio São Francisco com o mar, um banho de rio delicioso e um pôr do sol lindo. O senhor Roberio é quem cuida de tudo, um senhor que faz de tudo para preservar tudo isso.', visit:'novembro de 2025', trip:'com a família' },
+      { name:'Gabriela Amorim', meta:'2 contribuições', color:'#b56f9e', text:'Eu estava extremamente ansiosa pelo passeio, por tudo que eu já tinha lindo, e sinceramente, superou todas as minhas expectativas e sem dúvidas foi o melhor passeio que fiz em Alagoas. Foi além de um passeio, foi uma aula, uma experiência completa.', visit:'junho de 2026', trip:'com a família' },
+      { name:'Nathalia A', meta:'5 contribuições', color:'#7c8a5f', text:'Uma experiência incrível, atendimento excelente do início ao fim. Minha família foi muito bem atendida. O local é de fácil localização, limpo, organizado, oferece ducha, cooler para levarmos bebidas. O passeio foi maravilhoso, os guias muito educados.', visit:'março de 2026', trip:'com a família' },
+      { name:'Tamara E', meta:'1 contribuição', color:'#a67f5f', text:'Foi uma experiência ótima! O ponto de saída tem toda uma estrutura com banheiro, chuveiro, loja de roupas de banho e acessórios. Pegamos um dia que estava nublado, então o clima estava favorável (não estava o calorão). Chuviscou um pouco, mas valeu muito.', visit:'outubro de 2025', trip:'em casal' },
+      { name:'Ana Gabriela M', meta:'1 contribuição', color:'#5f8a9c', text:'Vale muito o passeio pelas dunas e pela foz do Rio São Francisco (rota dourada)! Mesmo com o tempo um pouco chuvoso valeu muito a pena! Já queremos voltar com um dia de sol!', visit:'abril de 2026', trip:'em casal' },
+      { name:'RHDornelles', meta:'Piraí do Sul, PR • 408 contribuições', color:'#9c6f5f', text:'Experiência única. Negociação transparente, com o cliente podendo escolher o roteiro e o meio de transporte de ida e de volta. Informes precisos. Perfeita atenção ao cliente, destacando o aspecto ecológico da experiência. Demonstram muito cuidado.', visit:'janeiro de 2026', trip:'com a família' },
+    ];
+  }
+
+  get galFilters(){
+    return [
+      { key:'todos', label:'Todos' },
+      { key:'dunas', label:'Dunas' },
+      { key:'rio', label:'Rio & Barco' },
+      { key:'frota', label:'Frota' },
+      { key:'base', label:'Nossa Base' },
+    ];
+  }
+
+  get baseSafety(){
+    return [
+      'Condutores capacitados pela ABETA Nacional e pelo SEBRAE.',
+      'Orientação e acompanhamento em todas as etapas do passeio.',
+      'Embarcações em conformidade com a Capitania dos Portos.',
+      'Coletes salva-vidas e equipamentos revisados para cada saída.',
+    ];
+  }
+
+  componentDidMount(){
+    this._onScroll = () => {
+      const s = (window.scrollY || 0) > 60;
+      if (s !== this.state.scrolled) this.setState({ scrolled:s });
+    };
+    window.addEventListener('scroll', this._onScroll, { passive:true });
+    this._onScroll();
+  }
+  componentWillUnmount(){ window.removeEventListener('scroll', this._onScroll); }
+
+  get tours(){
+    return [
+      {
+        title:'Rota Dourada', image:'assets/rota-dourada.png',
+        tag:'Superbuggy · L-200', tagBg:'rgba(255,255,255,.92)', tagColor:'#1a2b3d',
+        border:'1px solid #f0e6cc', featured:false,
+        priceNum:'200', priceCard:'R$ 210', duration:'Aprox. 3h', group:'Grupos pequenos',
+        badge:'Superbuggy · L-200', schedule:'09h e 14h', min:'3 pessoas (ou valor equivalente)',
+        short:'Incursão por mata de restinga, coqueiral, ~9 km de dunas, ski bunda e comunidade quilombola — um dos cenários mais surpreendentes de Alagoas.',
+        long:'Realizado em superbuggy, Ranger ou L-200, a Rota Dourada é uma excelente opção para conhecer a foz do rio São Francisco e sua área de influência. Uma incursão por mata de restinga, coqueiral, dunas com paradas para skis e comunidade quilombola, revelando um dos cenários mais surpreendentes de Alagoas — com banho nas piscinas naturais formadas pela água da chuva e um bate-papo leve com condutor capacitado pela ABETA e SEBRAE.',
+        stops:['Mata de restinga','Coqueiral interpretado','~9 km de dunas','Ski bunda','Comunidade quilombola','Piscinas naturais'],
+        includes:['Condutor capacitado pela ABETA e SEBRAE','Pranchas para ski bunda','Estacionamento privativo gratuito','Duchas para banho após o passeio'],
+      },
+      {
+        title:'Rota Dourada Plus', image:'assets/rota-dourada-plus.png',
+        tag:'Buggy + volta de barco', tagBg:'rgba(255,255,255,.92)', tagColor:'#1a2b3d',
+        border:'1px solid #e8dcbf', featured:true,
+        priceNum:'200', priceCard:'R$ 210', duration:'Aprox. 3h30', group:'Grupos pequenos',
+        badge:'Terra em buggy + volta de barco', schedule:'09h e 14h', min:'6 pessoas (ou valor equivalente)',
+        short:'A opção mais completa: vá por terra em superbuggy ou L-200 e volte por água em barco (ou vice-versa), navegando os últimos quilômetros do Velho Chico entre ilhas.',
+        long:'A melhor e mais completa opção para conhecer, de fato, a foz do rio São Francisco e sua área de influência: indo por terra em superbuggy ou L-200 e voltando por água em barco (ou vice-versa). Passa por mata de restinga, coqueiral interpretado e aproximadamente 9 km sobre dunas, com paradas para banho nas piscinas naturais, ski bunda, comunidade tradicional quilombola, banho de rio, visita ao encontro das águas e navegando os últimos quilômetros do Velho Chico entre ilhas.',
+        stops:['Ida por terra em buggy','Volta de barco','~9 km de dunas','Comunidade quilombola','Encontro das águas','Navegação entre ilhas'],
+        includes:['Condutor capacitado pela ABETA e SEBRAE','Passeio de barco incluso','Pranchas para ski bunda','Estacionamento privativo gratuito','Duchas para banho após o passeio'],
+      },
+      {
+        title:'Passeio de Barco', image:'assets/passeio-barco.png',
+        tag:'Passeio de Barco', tagBg:'rgba(255,255,255,.92)', tagColor:'#1a2b3d',
+        border:'1px solid #f0e6cc', featured:false,
+        priceNum:'110', priceCard:'R$ 115', duration:'Aprox. 3h30', group:'Grupos pequenos',
+        badge:'Barco típico da região', schedule:'09h e 14h ou a combinar', min:'3 pessoas (ou valor equivalente)',
+        short:'Navegue os últimos 13 km do Velho Chico em barco típico, entre ilhas, coqueirais e mangues, com parada de até 1h para banho perto do encontro das águas.',
+        long:'Passeio à foz do rio São Francisco em barco típico, percorrendo os últimos 13 km do maior rio genuinamente brasileiro, passando por ilhas, coqueirais e mangues — compondo o mais belo e poético trecho do Velho Chico. Desembarcamos próximo ao encontro das águas, no lado alagoano, onde permanecemos por até 1 hora para banho e apreciação do local.',
+        stops:['Últimos 13 km do Velho Chico','Ilhas e coqueirais','Mangues','Encontro das águas','1h para banho'],
+        includes:['Barco típico da região','Parada de até 1h para banho','Condutor experiente','Coletes salva-vidas'],
+      },
+    ];
+  }
+
+  get features(){
+    const gold='#a06d00', goldBg='#fdeec4', teal='#0c7b6e', tealBg='#e2f4ea';
+    return [
+      { title:'Pioneiros na Foz', iconColor:gold, iconBg:goldBg,
+        icon:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v3M12 22v-3"/><path d="M9 5h6l-1 4h2l-3 8H9l-3-8h2z"/><circle cx="12" cy="5" r="0"/></svg>',
+        text:'Fomos os primeiros a oferecer passeios estruturados de ecoturismo na foz do rio São Francisco, com anos de história e tradição.' },
+      { title:'Certificados ABETA & SEBRAE', iconColor:gold, iconBg:goldBg,
+        icon:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M9 14.5L8 22l4-2.2L16 22l-1-7.5"/><path d="M9.5 9l1.8 1.8L14.5 7.5"/></svg>',
+        text:'Todos os condutores são capacitados pela ABETA Nacional e pelo SEBRAE, garantindo padrão técnico e segurança em cada saída.' },
+      { title:'Experientes em Dunas', iconColor:gold, iconBg:goldBg,
+        icon:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M2 20c3-1 4-9 8-9s3 6 6 6 3-4 6-5"/><circle cx="17" cy="6" r="2.4"/></svg>',
+        text:'Vasta experiência na condução de veículos off-road sobre dunas — conhecemos cada detalhe da região.' },
+      { title:'Ecoturismo Responsável', iconColor:teal, iconBg:tealBg,
+        icon:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 019.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>',
+        text:'Praticamos uma atividade que respeita e preserva o ecossistema único da foz e as comunidades locais.' },
+      { title:'Grupos Pequenos', iconColor:gold, iconBg:goldBg,
+        icon:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/></svg>',
+        text:'Atendimento personalizado em grupos reduzidos, garantindo mais segurança, atenção e uma experiência imersiva.' },
+      { title:'Piaçabuçu · Alagoas', iconColor:teal, iconBg:tealBg,
+        icon:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+        text:'Localizada em Piaçabuçu, a 140 km da capital Maceió, na porta de entrada da foz do São Francisco.' },
+    ];
+  }
+
+  get fleet(){
+    return [
+      { name:'Carcará Superbuggy', cap:'Até 6 passageiros', text:'Veículo aberto, potente e ideal para encarar as dunas com adrenalina e segurança.',
+        gallery:['assets/carcara-superbuggy.jpeg','assets/hero-buggy.png','assets/opt-1.png'] },
+      { name:'Cabrita L-200', cap:'Até 6 passageiros', text:'Robustez e estabilidade para os trechos de areia fofa e o acesso à restinga.',
+        gallery:['assets/cabrita-l200.jpeg','assets/cabrita-l200.jpeg','assets/cabrita-l200.jpeg'] },
+      { name:'Capivara Ranger', cap:'Até 10 pessoas', text:'Espaçoso e confortável para grupos maiores que querem viver a foz juntos.',
+        gallery:['assets/capivara-ranger.jpeg','assets/capivara-ranger.jpeg','assets/capivara-ranger.jpeg'] },
+    ];
+  }
+
+  selectFleet(carIdx, imgIdx){
+    this.setState(s => {
+      const sel = s.fleetSel.slice();
+      sel[carIdx] = imgIdx;
+      return { fleetSel: sel };
+    });
+  }
+
+  wa(name){
+    const base='https://wa.me/5582999751975?text=';
+    const msg = name
+      ? 'Olá! Tenho interesse no passeio '+name+' da Farol da Foz Ecoturismo e gostaria de mais informações.'
+      : 'Olá! Tenho interesse em um dos passeios da Farol da Foz Ecoturismo e gostaria de mais informações.';
+    window.open(base+encodeURIComponent(msg),'_blank');
+  }
+
+  open(i){ this.setState({ tourIdx:i }); if(typeof window!=='undefined') window.scrollTo({top:0}); }
+
+  scrollReviews(dir){
+    const el = document.getElementById('reviews-track');
+    if(el){ el.scrollBy({ left: dir * Math.min(el.clientWidth*0.85, 360), behavior:'smooth' }); }
+  }
+
+  renderVals(){
+    const sc = this.state.scrolled;
+    const t = this.state.tourIdx!=null ? this.tours[this.state.tourIdx] : null;
+    const galFiltered = this.galleryAll.filter(g => this.state.galFilter==='todos' || g.cat===this.state.galFilter);
+    const galLen = galFiltered.length;
+    const lbActive = (this.state.lbIndex!=null && this.state.lbIndex<galLen) ? galFiltered[this.state.lbIndex] : null;
+    const tours = this.tours.map((tr,i)=>({
+      ...tr,
+      reserve: () => this.wa(tr.title),
+      details: () => this.open(i),
+    }));
+    return {
+      tours,
+      features: this.features,
+      fleet: this.fleet.map((v,ci) => {
+        const cur = this.state.fleetSel[ci] || 0;
+        return {
+          ...v,
+          active: v.gallery[cur],
+          thumbs: v.gallery.map((src,ii) => ({
+            src,
+            border: ii===cur ? '#f2a900' : 'rgba(255,255,255,.18)',
+            opacity: ii===cur ? '1' : '.7',
+            select: () => this.selectFleet(ci, ii),
+          })),
+        };
+      }),
+      // header scroll states
+      headerBg: sc ? 'rgba(255,255,255,.96)' : 'transparent',
+      headerShadow: sc ? '0 2px 22px -12px rgba(26,43,61,.5)' : 'none',
+      headerBlur: sc ? 'blur(10px)' : 'blur(0px)',
+      headerH: sc ? '66px' : '86px',
+      headerLogo: sc ? 'assets/logo-dark.png' : 'assets/logo-branca.png',
+      logoH: sc ? '46px' : '62px',
+      logoFilter: sc ? 'none' : 'drop-shadow(0 2px 10px rgba(0,0,0,.55))',
+      navColor: sc ? '#1a2b3d' : '#ffffff',
+      burgerBg: sc ? '#f6f1e6' : 'rgba(255,255,255,.18)',
+      burgerColor: sc ? '#1a2b3d' : '#ffffff',
+      // about + menu
+      menuOpen: this.state.menuOpen,
+      expanded: this.state.expanded,
+      collapsed: !this.state.expanded,
+      hasCaminho: false,
+      noCaminho: true,
+      baseOpen: this.state.baseOpen,
+      baseSafety: this.baseSafety,
+      openBase: () => { this.setState({ baseOpen:true }); if(typeof window!=='undefined') window.scrollTo({top:0}); },
+      closeBase: () => this.setState({ baseOpen:false }),
+      // gallery
+      reviews: this.reviews.map(r => ({ ...r, initial: r.name.charAt(0).toUpperCase() })),
+      reviewsScrollLeft: () => this.scrollReviews(-1),
+      reviewsScrollRight: () => this.scrollReviews(1),
+      galFilters: this.galFilters.map(f => ({
+        ...f,
+        active: this.state.galFilter===f.key,
+        chipBg: this.state.galFilter===f.key ? '#f2a900' : '#fff',
+        chipColor: this.state.galFilter===f.key ? '#1a2b3d' : '#5c6b7e',
+        chipBorder: this.state.galFilter===f.key ? '#f2a900' : '#ead9ab',
+        pick: () => this.setState({ galFilter:f.key, lbIndex:null }),
+      })),
+      galleryOpen: this.state.galleryOpen,
+      openGallery: () => { this.setState({ galleryOpen:true, galFilter:'todos' }); if(typeof window!=='undefined') window.scrollTo({top:0}); },
+      closeGallery: () => this.setState({ galleryOpen:false, lbIndex:null }),
+      galleryStrip: this.galleryAll.slice(0,8).map((g,i) => ({ ...g, open: () => { this.setState({ galleryOpen:true, galFilter:'todos', lbIndex:i }); if(typeof window!=='undefined') window.scrollTo({top:0}); } })),
+      galleryItems: galFiltered.map((g,i) => ({ ...g, open: () => this.setState({ lbIndex:i }) })),
+      lbOpen: lbActive!=null,
+      lbImg: lbActive ? lbActive.src : '',
+      lbAlt: lbActive ? lbActive.alt : '',
+      lbCounter: lbActive ? (this.state.lbIndex+1)+' / '+galLen : '',
+      lbClose: () => this.setState({ lbIndex:null }),
+      lbNext: () => this.setState(s => ({ lbIndex: (s.lbIndex+1)%galLen })),
+      lbPrev: () => this.setState(s => ({ lbIndex: (s.lbIndex-1+galLen)%galLen })),
+      // detail overlay
+      isDetail: t!=null,
+      tour: t || {},
+      tourStops: t ? t.stops : [],
+      tourIncludes: t ? t.includes : [],
+      // handlers
+      toggleMenu: () => this.setState(s=>({ menuOpen:!s.menuOpen })),
+      closeMenu: () => this.setState({ menuOpen:false }),
+      toggleText: () => this.setState(s=>({ expanded:!s.expanded })),
+      waGeneral: () => this.wa(),
+      waCurrent: () => this.wa(t ? t.title : undefined),
+      back: () => this.setState({ tourIdx:null }),
+    };
+  }
+}
+</script>
+</body>
+</html>

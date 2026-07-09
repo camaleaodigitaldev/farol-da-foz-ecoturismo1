@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Montserrat',system-ui,sans-serif;color:#1a2b3d;background:#eef1f5;-webkit-font-smoothing:antialiased}
+  img{display:block;max-width:100%}
+  input,textarea,select{font-family:'Montserrat',sans-serif}
+  textarea{resize:vertical}
+  a{color:#c98a00;text-decoration:none}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:#cdd4de;border-radius:6px}
+  @keyframes ffToast{0%{opacity:0;transform:translateY(10px)}12%{opacity:1;transform:none}88%{opacity:1;transform:none}100%{opacity:0;transform:translateY(10px)}}
+  .ff-sidebar{display:flex}
+  .ff-burger{display:none}
+  @media(max-width:860px){
+    .ff-sidebar{position:fixed;top:0;bottom:0;left:0;z-index:60;transform:translateX(-100%);transition:transform .28s}
+    .ff-sidebar.open{transform:none}
+    .ff-burger{display:inline-flex}
+    .ff-main{width:100%}
+  }
+</style>
+<script src="./image-slot.js"></script>
+</helmet>
+
+<div style="display:flex;min-height:100vh">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="ff-sidebar {{ sidebarCls }}" style="width:264px;flex-shrink:0;background:#12212f;color:#fff;flex-direction:column;padding:0">
+    <div style="padding:22px 22px 18px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:12px">
+      <div style="width:40px;height:40px;border-radius:11px;background:#f2a900;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#12212f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M8 8h8l-1.5 13h-5z"/><path d="M6 21h12"/></svg></div>
+      <div>
+        <div style="font-family:'Poppins';font-weight:700;font-size:15px;line-height:1.1">Painel Farol da Foz</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.55);margin-top:2px">Gestor do site</div>
+      </div>
+    </div>
+    <nav style="flex:1;overflow-y:auto;padding:14px 12px">
+      <sc-for list="{{ nav }}" as="n" hint-placeholder-count="11">
+        <button onClick="{{ n.go }}" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 13px;margin-bottom:3px;border:none;border-radius:10px;cursor:pointer;text-align:left;font-family:'Poppins';font-weight:600;font-size:13.5px;background:{{ n.bg }};color:{{ n.color }};transition:background .15s" style-hover="background:rgba(255,255,255,.08)">
+          <span style="width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center">{{ n.iconEl }}</span>
+          {{ n.label }}
+        </button>
+      </sc-for>
+    </nav>
+    <div style="padding:14px 16px;border-top:1px solid rgba(255,255,255,.08)">
+      <a href="Farol da Foz.dc.html" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;color:#fff;background:rgba(255,255,255,.1);border-radius:10px;padding:11px;font-family:'Poppins';font-weight:600;font-size:13px" style-hover="background:rgba(255,255,255,.18)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6M10 14L21 3"/></svg>
+        Ver site publicado
+      </a>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="ff-main" style="flex:1;display:flex;flex-direction:column;min-width:0">
+
+    <!-- Topbar -->
+    <header style="position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid #e3e7ee;padding:14px clamp(16px,3vw,32px);display:flex;align-items:center;justify-content:space-between;gap:14px">
+      <div style="display:flex;align-items:center;gap:12px;min-width:0">
+        <button class="ff-burger" onClick="{{ toggleSidebar }}" aria-label="Menu" style="width:42px;height:42px;border:1px solid #e3e7ee;background:#fff;border-radius:10px;cursor:pointer;align-items:center;justify-content:center;flex-shrink:0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a2b3d" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+        <div style="min-width:0">
+          <h1 style="font-family:'Poppins';font-weight:700;font-size:clamp(17px,2.4vw,21px);margin:0;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ sectionTitle }}</h1>
+          <p style="font-size:12.5px;color:#8592a3;margin:2px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ sectionHint }}</p>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:#2f8f6b;font-weight:600"><span style="width:8px;height:8px;border-radius:50%;background:#2f8f6b;display:inline-block"></span>Salvo automaticamente</span>
+        <button onClick="{{ publish }}" style="display:inline-flex;align-items:center;gap:8px;background:#f2a900;color:#12212f;border:none;font-family:'Poppins';font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:10px;cursor:pointer" style-hover="background:#ffbb1a"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>Publicar</button>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main style="flex:1;padding:clamp(18px,3vw,34px);max-width:960px;width:100%">
+
+      <!-- ===== OVERVIEW ===== -->
+      <sc-if value="{{ isOverview }}" hint-placeholder-val="{{ true }}">
+        <div style="background:linear-gradient(120deg,#12212f,#22384f);color:#fff;border-radius:18px;padding:clamp(24px,4vw,36px);margin-bottom:24px">
+          <h2 style="font-family:'Poppins';font-weight:700;font-size:clamp(20px,3vw,28px);margin:0 0 8px">Bem-vindo ao painel 👋</h2>
+          <p style="font-size:15px;line-height:1.6;color:rgba(255,255,255,.82);margin:0;max-width:60ch">Aqui você atualiza tudo do site sem precisar de programação. Escolha uma seção no menu à esquerda, altere textos, preços ou fotos, e clique em <strong style="color:#f2a900">Publicar</strong>. As alterações são salvas automaticamente enquanto você edita.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px">
+          <sc-for list="{{ overviewCards }}" as="c" hint-placeholder-count="6">
+            <button onClick="{{ c.go }}" style="text-align:left;background:#fff;border:1px solid #e3e7ee;border-radius:14px;padding:20px;cursor:pointer;transition:box-shadow .2s,transform .2s" style-hover="box-shadow:0 14px 30px -18px rgba(26,43,61,.4);transform:translateY(-3px)">
+              <div style="width:42px;height:42px;border-radius:11px;background:#fdf3d6;color:#b8862f;display:flex;align-items:center;justify-content:center;margin-bottom:13px">{{ c.iconEl }}</div>
+              <h3 style="font-family:'Poppins';font-weight:700;font-size:15px;margin:0 0 5px">{{ c.label }}</h3>
+              <p style="font-size:13px;line-height:1.5;color:#8592a3;margin:0">{{ c.desc }}</p>
+            </button>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- ===== HERO ===== -->
+      <sc-if value="{{ isHero }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px solid #e3e7ee;border-radius:16px;padding:clamp(20px,3vw,30px);margin-bottom:20px">
+          <h3 style="font-family:'Poppins';font-weight:700;font-size:15px;margin:0 0 4px">Imagem de fundo do topo</h3>
+          <p style="font-size:13px;color:#8592a3;margin:0 0 14px">Arraste uma foto (paisagem, horizontal) para o quadro abaixo.</p>
+          <div style="height:200px;border-radius:12px;overflow:hidden;background:#eef1f5"><image-slot id="admin-hero-bg" placeholder="Foto de fundo do topo" style="width:100%;height:100%"></image-slot></div>
+        </div>
+        <div style="background:#fff;border:1px solid #e3e7ee;border-radius:16px;padding:clamp(20px,3vw,30px)">
+          <sc-for list="{{ heroFields }}" as="f" hint-placeholder-count="4">
+            <label style="display:block;margin-bottom:16px">
+              <span style="display:block;font-family:'Poppins';font-weight:600;font-size:12.5px;color:#5c6b7e;margin-bottom:6px">{{ f.label }}</span>
+              <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}"><input defaultValue="{{ f.value }}" onInput="{{ f.onInput }}" style="width:100%;box-sizing:border-box;font-size:14px;color:#1a2b3d;padding:11px 13px;border:1px solid #dfe3ea;border-radius:10px;background:#fff;outline:none" style-focus="border-color:#f2a900"></sc-if>
+              <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}"><textarea defaultValue="{{ f.value }}" onInput="{{ f.onInput }}" rows="3" style="width:100%;box-sizing:border-box;font-size:14px;color:#1a2b3d;padding:11px 13px;border:1px solid #dfe3ea;border-radius:10px;background:#fff;outline:none;line-height:1.6" style-focus="border-color:#f2a900"></textarea></sc-if>
+            </label>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- ===== PASSEIOS ===== -->
+      <sc-if value="{{ isTours }}" hint-placeholder-val="{{ false }}">
+        <sc-for list="{{ toursUI }}" as="t" hint-placeholder-count="3">
+          <div style="background:#fff;border:1px solid #e3e7ee;border-radius:16px;padding:clamp(18px,3vw,26px);margin-bottom:16px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+              <h3 style="font-family:'Poppins';font-weight:700;font-size:16px;margin:0">{{ t.name }}</h3>
+              <div style="display:flex;align-items:center;gap:12px">
+                <button onClick="{{ t.toggleFeatured }}" style="display:inline-flex;align-items:center;gap:7px;background:{{ t.featBg }};color:{{ t.featColor }};border:1px solid {{ t.featBorder }};font-family:'Poppins';font-weight:600;font-size:12px;padding:7px 13px;border-radius:999px;cursor:pointer">{{ t.featLabel }}</button>
+                <button onClick="{{ t.remove }}" aria-label="Remover" style="width:34px;height:34px;border:1px solid #f0d4d4;background:#fff;color:#c0392b;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:#fdeaea"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:180px 1fr;gap:18px;align-items:start">
+              <div>
+                <div style="height:130px;border-radius:11px;overflow:hidden;background:#eef1f5;margin-bottom:8px"><image-slot id="{{ t.photoId }}" placeholder="Foto do passeio" style="width:100%;height:100%"></image-slot></div>
+                <p style="font-size:11.5px;color:#8592a3;margin:0;text-align:center">Foto do passeio</p>
+              </div>
+              <div>
+                <sc-for list="{{ t.fields }}" as="f" hint-placeholder-count="6">
+                  <label style="display:block;margin-bottom:12px">
+                    <span style="display:block;font-family:'Poppins';font-weight:600;font-size:12px;color:#5c6b7e;margin-bottom:5px">{{ f.label }}</span>
+                    <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}"><input defaultValue="{{ f.value }}" onInput="{{ f.onInput }}" style="width:100%;box-sizing:border-box;font-size:13.5px;color:#1a2b3d;padding:10px 12px;border:1px solid #dfe3ea;border-radius:9px;background:#fff;outline:none" style-focus="border-color:#f2a900"></sc-if>
+                    <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}"><textarea defaultValue="{{ f.value }}" onInput="{{ f.onInput }}" rows="3" style="width:100%;box-sizing:border-box;font-size:13.5px;color:#1a2b3d;padding:10px 12px;border:1px solid #dfe3ea;border-radius:9px;background:#fff;outline:none;line-height:1.55" style-focus="border-color:#f2a900"></textarea></sc-if>
+                  </label>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+        <button onClick="{{ addTour }}" style="width:100%;display:flex;align-items:center;justify-content:center;gap:9px;background:#fff;border:1.5px dashed #c7cfda;color:#5c6b7e;font-family:'Poppins';font-weight:600;font-size:14px;padding:16px;border-radius:14px;cursor:pointer" style-hover="border-color:#f2a900;color:#a06d00"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Adicionar passeio</button>
+      </sc-if>
+
+      <!-- ===== SOBRE ===== -->
+      <sc-if value="{{ isAbout }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px solid #e3e7ee;border-radius:16px;padding:clamp(20px,3vw,30px);margin-bottom:20px">
+          <h3 style="font-family:'Poppins';font-weight:700;font-size:15px;margin:0 0 4px">Foto da seção</h3>
+          <p style="font-size:13px;color:#8592a3;margin:0 0 14px">Uma foto marcante da região (pessoas curtindo, paisagem).</p>
+          <div style="height:200px;border-radius:12px;overflow:hidden;background:#eef1f5"><image-slot id="admin-about" placeholder="Foto da seção Sobre" style="width:100%;height:100%"></image-slot></div>
+        </div>
+        <div style="background:#fff;border:1px solid #e3e7ee;border-radius:16px;padding:clamp(20px,3vw,30px)">
+          <sc-for list="{{ aboutFields }}" as="f" hint-placeholder-count="5">
+            <label style="display:block;margin-bottom:16px">
+              <span style="display:block;font-family:'Poppins';font-weight:600;font-size:12.5px;color:#5c6b7e;margin-bottom:6px">{{ f.label }}</span>
+              <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}"><input defaultValue="{{ f.value }}" onInput="{{ f.onInput }}" style="width:100%;box-sizing:border-box;font-size:14px;color:#1a2b3d;padding:11px 13px;border:1px solid #dfe3ea;border-radius:10px;background:#fff;outline:none" style-focus="border-color:#f2a900"></sc-if>
+              <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}"><textarea defaultValue="{{ f.value }}" onInput="{{ f.onInput }}" rows="3" style="width:100%;box-sizing:border-box;font-size:14px;color:#1a2b3d;padding:11px 13px;border:1px solid #dfe3ea;border-radius:10px;background:#fff;outline:none;line-height:1.6" style-focus="border-color:#f2a900"></textarea></sc-if>
+            </label>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- ===== DIFERENCIAIS ===== -->
+      <sc-if value="{{ isFeatures }}" hint-placeholder-val="{{ false }}">
+        <p style="font-size:13.5px;color:#8592a3;margin:0 0 16px">Os 6 destaques que aparecem na seção "Pioneiros na Foz".</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px">
+          <sc-for list="{{ featuresUI }}" as="f" hint-placeholder-count="6">
+            <div style="background:#fff;border:1px solid #e3e7ee;border-radius:14px;padding:20px">
+              <label style="display:block;margin-bottom:12px">
+                <span style="display:block;font-family:'Poppins';font-weight:600;font-size:12px;color:#5c6b7e;margin-bottom:5px">Título</span>
+                <input defaultValue="{{ f.title }}" onInput="{{ f.onTitle }}" style="width:100%;box-sizing:border-box;font-size:13.5px;color:#1a2b3d;padding:10px 12px;border:1px solid #dfe3ea;border-radius:9px;outline:none" style-focus="border-color:#f2a900">
+              </label>
+              <label style="display:block">
+                <span style="display:block;font-family:'Poppins';font-weight:600;font-size:12px;color:#5c6b7e;margin-bottom:5px">Descrição</span>
+                <textarea defaultValue="{{ f.text }}" onInput="{{ f.onText }}" rows="3" style="width:100%;box-sizing:border-box;font-size:13.5px;color:#1a2b3d;padding:10px 12px;border:1px solid #dfe3ea;border-radius:9px;outline:none;line-height:1.55" style-focus="border-color:#f2a900"></textarea>
+              </label>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- ===== FROTA ===== -->
+      <sc-if value="{{ isFleet }}" hint-placeholder-val="{{ false }}">
+        <sc-for list="{{ fleetUI }}" as="v" hint-placeholder-count="3">
+          <div style="background:#fff;border:1px solid #e3e7ee;border-radius:16px;padding:clamp(18px,3vw,26px);margin-bottom:16px;display:grid;grid-template-columns:180px 1fr;gap:18px;align-items:start">
+            <div>
+              <div style="height:120px;border-radius:11px;overflow:hidden;background:#eef1f5;margin-bottom:8px"><image-slot id="{{ v.photoId }}" placeholder="Foto do veículo" style="width:100%;height:100%"></image-slot></div>
+              <p style="font-size:11.5px;color:#8592a3;margin:0;text-align:center">Foto do veículo</p>
+            </div>
+            <div>
+              <sc-for list="{{ v.fields }}" as="f" hint-placeholder-count="3">
+                <label style="display:block;margin-bottom:12px">
+                  <span style="display:block;font-family:'Poppins';font-weight:600;font-size:12px;color:#5c6b7e;margin-bottom:5px">{{ f.label }}</span>
+                  <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}"><input defaultValue="{{ f.value }}" onInput="{{ f.onInput }}" style="width:100%;box-sizing:border-box;font-size:13.5px;color:#1a2b3d;padding:10px 12px;border:1px solid #dfe3ea;border-radius:9px;outline:none" style-focus="border-color:#f2a900"></sc-if>
+                  <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}"><textarea defaultValue="{{ f.value }}" onInput="{{ f.onInput }}" rows="2" style="width:100%;box-sizing:border-box;font-size:13.5px;color:#1a2b3d;padding:10px 12px;border:1px solid #dfe3ea;border-radius:9px;outline:none;line-height:1.55" style-focus="border-color:#f2a900"></textarea></sc-if>
+                </label>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </sc-if>
+
+      <!-- ===== AVALIAÇÕES ===== -->
+      <sc-if value="{{ isReviews }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px solid #e3e7ee;border-radius:16px;padding:clamp(20px,3vw,28px);margin-bottom:18px">
+          <h3 style="font-family:'Poppins';font-weight:700;font-size:15px;margin:0 0 14px">Resumo (Tripadvisor)</h3>
+          <div style="display:flex;gap:16px;flex-wrap:wrap">
+            <sc-for list="{{ reviewMetaFields }}" as="f" hint-placeholder-count="2">
+              <label style="display:block;flex:1;min-width:160px">
+                <span style="display:block;font-family:'Poppins';font-weight:600;font-size:12px;color:#5c6b7e;margin-bottom:5px">{{ f.label }}</span>
+                <input defaultValue="{{ f.value }}" onInput="{{ f.onInput }}" style="width:100%;box-sizing:border-box;font-size:13.5px;color:#1a2b3d;padding:10px 12px;border:1px solid #dfe3ea;border-radius:9px;outline:none" style-focus="border-color:#f2a900">
+              </label>
+            </sc-for>
+          </div>
+        </div>
+        <sc-for list="{{ reviewsUI }}" as="r" hint-placeholder-count="3">
+          <div style="background:#fff;border:1px solid #e3e7ee;border-radius:14px;padding:20px;margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <span style="font-family:'Poppins';font-weight:700;font-size:13px;color:#8592a3">Depoimento {{ r.num }}</span>
+              <button onClick="{{ r.remove }}" aria-label="Remover" style="width:32px;height:32px;border:1px solid #f0d4d4;background:#fff;color:#c0392b;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:#fdeaea"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>
+            </div>
+            <sc-for list="{{ r.fields }}" as="f" hint-placeholder-count="4">
+              <label style="display:block;margin-bottom:12px">
+                <span style="display:block;font-family:'Poppins';font-weight:600;font-size:12px;color:#5c6b7e;margin-bottom:5px">{{ f.label }}</span>
+                <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}"><input defaultValue="{{ f.value }}" onInput="{{ f.onInput }}" style="width:100%;box-sizing:border-box;font-size:13.5px;color:#1a2b3d;padding:10px 12px;border:1px solid #dfe3ea;border-radius:9px;outline:none" style-focus="border-color:#f2a900"></sc-if>
+                <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}"><textarea defaultValue="{{ f.value }}" onInput="{{ f.onInput }}" rows="3" style="width:100%;box-sizing:border-box;font-size:13.5px;color:#1a2b3d;padding:10px 12px;border:1px solid #dfe3ea;border-radius:9px;outline:none;line-height:1.55" style-focus="border-color:#f2a900"></textarea></sc-if>
+              </label>
+            </sc-for>
+          </div>
+        </sc-for>
+        <button onClick="{{ addReview }}" style="width:100%;display:flex;align-items:center;justify-content:center;gap:9px;background:#fff;border:1.5px dashed #c7cfda;color:#5c6b7e;font-family:'Poppins';font-weight:600;font-size:14px;padding:16px;border-radius:14px;cursor:pointer" style-hover="border-color:#f2a900;color:#a06d00"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Adicionar depoimento</button>
+      </sc-if>
+
+      <!-- ===== GALERIA ===== -->
+      <sc-if value="{{ isGallery }}" hint-placeholder-val="{{ false }}">
+        <p style="font-size:13.5px;color:#8592a3;margin:0 0 16px">Adicione fotos e escolha a categoria de cada uma. Elas aparecem na galeria do site.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px">
+          <sc-for list="{{ galleryUI }}" as="g" hint-placeholder-count="6">
+            <div style="background:#fff;border:1px solid #e3e7ee;border-radius:14px;padding:12px">
+              <div style="height:130px;border-radius:10px;overflow:hidden;background:#eef1f5;margin-bottom:10px"><image-slot id="{{ g.photoId }}" placeholder="Foto" style="width:100%;height:100%"></image-slot></div>
+              <select defaultValue="{{ g.cat }}" onChange="{{ g.onCat }}" style="width:100%;box-sizing:border-box;font-size:13px;color:#1a2b3d;padding:9px 10px;border:1px solid #dfe3ea;border-radius:9px;outline:none;background:#fff;margin-bottom:8px" style-focus="border-color:#f2a900">
+                <option value="dunas">Dunas</option>
+                <option value="rio">Rio &amp; Barco</option>
+                <option value="frota">Frota</option>
+                <option value="base">Nossa Base</option>
+              </select>
+              <button onClick="{{ g.remove }}" style="width:100%;display:flex;align-items:center;justify-content:center;gap:6px;background:#fff;border:1px solid #f0d4d4;color:#c0392b;font-family:'Poppins';font-weight:600;font-size:12.5px;padding:8px;border-radius:9px;cursor:pointer" style-hover="background:#fdeaea"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>Remover</button>
+            </div>
+          </sc-for>
+          <button onClick="{{ addPhoto }}" style="min-height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:#fff;border:1.5px dashed #c7cfda;color:#5c6b7e;font-family:'Poppins';font-weight:600;font-size:13.5px;border-radius:14px;cursor:pointer" style-hover="border-color:#f2a900;color:#a06d00"><div style="width:44px;height:44px;border-radius:50%;background:#f7f2e6;color:#b8862f;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>Adicionar foto</button>
+        </div>
+      </sc-if>
+
+      <!-- ===== NOSSA BASE ===== -->
+      <sc-if value="{{ isBase }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px solid #e3e7ee;border-radius:16px;padding:clamp(20px,3vw,28px);margin-bottom:18px">
+          <label style="display:block;margin-bottom:6px">
+            <span style="display:block;font-family:'Poppins';font-weight:600;font-size:12.5px;color:#5c6b7e;margin-bottom:6px">Texto de apresentação da base</span>
+            <textarea defaultValue="{{ baseIntro }}" onInput="{{ onBaseIntro }}" rows="3" style="width:100%;box-sizing:border-box;font-size:14px;color:#1a2b3d;padding:11px 13px;border:1px solid #dfe3ea;border-radius:10px;outline:none;line-height:1.6" style-focus="border-color:#f2a900"></textarea>
+          </label>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px">
+          <div style="background:#fff;border:1px solid #e3e7ee;border-radius:14px;padding:20px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3 style="font-family:'Poppins';font-weight:700;font-size:14px;margin:0">O que encontra na base</h3><button onClick="{{ addStructure }}" style="width:30px;height:30px;border:1px solid #dfe3ea;background:#fff;border-radius:8px;cursor:pointer;color:#a06d00;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div>
+            <sc-for list="{{ baseStructureUI }}" as="s" hint-placeholder-count="4">
+              <div style="display:flex;gap:8px;margin-bottom:8px"><input defaultValue="{{ s.value }}" onInput="{{ s.onInput }}" style="flex:1;min-width:0;box-sizing:border-box;font-size:13px;color:#1a2b3d;padding:9px 11px;border:1px solid #dfe3ea;border-radius:8px;outline:none" style-focus="border-color:#f2a900"><button onClick="{{ s.remove }}" aria-label="Remover" style="width:36px;flex-shrink:0;border:1px solid #f0d4d4;background:#fff;color:#c0392b;border-radius:8px;cursor:pointer">✕</button></div>
+            </sc-for>
+          </div>
+          <div style="background:#fff;border:1px solid #e3e7ee;border-radius:14px;padding:20px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3 style="font-family:'Poppins';font-weight:700;font-size:14px;margin:0">Itens de segurança</h3><button onClick="{{ addSafety }}" style="width:30px;height:30px;border:1px solid #dfe3ea;background:#fff;border-radius:8px;cursor:pointer;color:#a06d00;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div>
+            <sc-for list="{{ baseSafetyUI }}" as="s" hint-placeholder-count="4">
+              <div style="display:flex;gap:8px;margin-bottom:8px"><input defaultValue="{{ s.value }}" onInput="{{ s.onInput }}" style="flex:1;min-width:0;box-sizing:border-box;font-size:13px;color:#1a2b3d;padding:9px 11px;border:1px solid #dfe3ea;border-radius:8px;outline:none" style-focus="border-color:#f2a900"><button onClick="{{ s.remove }}" aria-label="Remover" style="width:36px;flex-shrink:0;border:1px solid #f0d4d4;background:#fff;color:#c0392b;border-radius:8px;cursor:pointer">✕</button></div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #e3e7ee;border-radius:16px;padding:clamp(20px,3vw,28px)">
+          <h3 style="font-family:'Poppins';font-weight:700;font-size:15px;margin:0 0 14px">Direção — Robério Góes</h3>
+          <div style="display:grid;grid-template-columns:120px 1fr;gap:18px;align-items:start">
+            <div><div style="width:110px;height:110px;border-radius:50%;overflow:hidden;background:#eef1f5"><image-slot id="admin-director" shape="circle" placeholder="Foto" style="width:100%;height:100%"></image-slot></div></div>
+            <div>
+              <sc-for list="{{ directorFields }}" as="f" hint-placeholder-count="3">
+                <label style="display:block;margin-bottom:12px">
+                  <span style="display:block;font-family:'Poppins';font-weight:600;font-size:12px;color:#5c6b7e;margin-bottom:5px">{{ f.label }}</span>
+                  <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}"><input defaultValue="{{ f.value }}" onInput="{{ f.onInput }}" style="width:100%;box-sizing:border-box;font-size:13.5px;color:#1a2b3d;padding:10px 12px;border:1px solid #dfe3ea;border-radius:9px;outline:none" style-focus="border-color:#f2a900"></sc-if>
+                  <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}"><textarea defaultValue="{{ f.value }}" onInput="{{ f.onInput }}" rows="3" style="width:100%;box-sizing:border-box;font-size:13.5px;color:#1a2b3d;padding:10px 12px;border:1px solid #dfe3ea;border-radius:9px;outline:none;line-height:1.55" style-focus="border-color:#f2a900"></textarea></sc-if>
+                </label>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ===== CONTATO ===== -->
+      <sc-if value="{{ isContact }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px solid #e3e7ee;border-radius:16px;padding:clamp(20px,3vw,30px)">
+          <sc-for list="{{ contactFields }}" as="f" hint-placeholder-count="5">
+            <label style="display:block;margin-bottom:16px">
+              <span style="display:block;font-family:'Poppins';font-weight:600;font-size:12.5px;color:#5c6b7e;margin-bottom:6px">{{ f.label }}</span>
+              <input defaultValue="{{ f.value }}" onInput="{{ f.onInput }}" style="width:100%;box-sizing:border-box;font-size:14px;color:#1a2b3d;padding:11px 13px;border:1px solid #dfe3ea;border-radius:10px;outline:none" style-focus="border-color:#f2a900">
+            </label>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- ===== CONFIGURAÇÕES ===== -->
+      <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px solid #e3e7ee;border-radius:16px;padding:clamp(20px,3vw,30px);margin-bottom:18px">
+          <h3 style="font-family:'Poppins';font-weight:700;font-size:15px;margin:0 0 4px">Logo do site</h3>
+          <p style="font-size:13px;color:#8592a3;margin:0 0 14px">Arraste a logo (fundo transparente, PNG).</p>
+          <div style="height:90px;border-radius:12px;overflow:hidden;background:#12212f;display:flex;align-items:center;justify-content:center;padding:14px"><image-slot id="admin-logo" placeholder="Logo" style="height:100%;width:auto"></image-slot></div>
+        </div>
+        <div style="background:#fff;border:1px solid #e3e7ee;border-radius:16px;padding:clamp(20px,3vw,30px)">
+          <sc-for list="{{ settingsFields }}" as="f" hint-placeholder-count="2">
+            <label style="display:block;margin-bottom:16px">
+              <span style="display:block;font-family:'Poppins';font-weight:600;font-size:12.5px;color:#5c6b7e;margin-bottom:6px">{{ f.label }}</span>
+              <input defaultValue="{{ f.value }}" onInput="{{ f.onInput }}" style="width:100%;box-sizing:border-box;font-size:14px;color:#1a2b3d;padding:11px 13px;border:1px solid #dfe3ea;border-radius:10px;outline:none" style-focus="border-color:#f2a900">
+            </label>
+          </sc-for>
+          <div style="background:#fff8e6;border:1px solid #f0e0b0;border-radius:11px;padding:14px 16px;font-size:13px;line-height:1.55;color:#8a6d1f;display:flex;gap:10px"><span style="flex-shrink:0">ℹ️</span><span>O número de WhatsApp aqui é usado em <strong>todos os botões</strong> do site. Altere em um só lugar e vale para tudo.</span></div>
+        </div>
+      </sc-if>
+
+    </main>
+  </div>
+
+  <!-- Sidebar backdrop (mobile) -->
+  <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ toggleSidebar }}" style="position:fixed;inset:0;z-index:55;background:rgba(12,28,45,.45)"></div>
+  </sc-if>
+
+  <!-- Toast -->
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:90;background:#12212f;color:#fff;font-family:'Poppins';font-weight:600;font-size:14px;padding:14px 22px;border-radius:12px;box-shadow:0 18px 40px -14px rgba(0,0,0,.5);display:flex;align-items:center;gap:10px;animation:ffToast 2.4s ease both"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>{{ toast }}</div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { section:'overview', sidebarOpen:false, toast:'', data:null };
+
+  defaults(){
+    return {
+      settings:{ whatsapp:'(82) 99975-1975', email:'faroldafoztur@hotmail.com' },
+      hero:{ badge:'Foz do Rio São Francisco · Piaçabuçu · Alagoas', title1:'Viva a Foz do', title2:'São Francisco', subtitle:'Onde o Velho Chico encontra o mar. Dunas, ilhas e cultura em passeios com condutores certificados pela ABETA e pelo SEBRAE.' },
+      about:{ eyebrow:'Nossa História', title:'Uma experiência além do que os olhos podem ver', p1:'Imagine conhecer a foz do Rio São Francisco de um jeito que vai muito além do que os olhos podem ver. Com a Farol da Foz Ecoturismo, você não faz apenas um passeio… você vive uma experiência completa.', p2:'Somos uma empresa pioneira, com anos de história e profundo conhecimento da região. Nossos condutores são capacitados e apaixonados pelo que fazem.' },
+      tours:[
+        { name:'Rota Dourada', tag:'Superbuggy · L-200', price:'200', priceCard:'R$ 210', duration:'Aprox. 3h', min:'3 pessoas (ou valor equivalente)', short:'Incursão por mata de restinga, coqueiral, ~9 km de dunas, ski bunda e comunidade quilombola.', long:'Realizado em superbuggy, Ranger ou L-200, é uma excelente opção para conhecer a foz e sua área de influência, com banho nas piscinas naturais e condutor capacitado pela ABETA e SEBRAE.', featured:false },
+        { name:'Rota Dourada Plus', tag:'Buggy + volta de barco', price:'200', priceCard:'R$ 210', duration:'Aprox. 3h30', min:'6 pessoas (ou valor equivalente)', short:'A opção mais completa: vá por terra em buggy e volte por água em barco, navegando o Velho Chico entre ilhas.', long:'A melhor e mais completa opção: indo por terra em superbuggy ou L-200 e voltando por água em barco (ou vice-versa), passando por dunas, comunidade quilombola e o encontro das águas.', featured:true },
+        { name:'Passeio de Barco', tag:'Passeio de Barco', price:'110', priceCard:'R$ 115', duration:'Aprox. 3h30', min:'3 pessoas (ou valor equivalente)', short:'Navegue os últimos 13 km do Velho Chico em barco típico, com parada para banho perto do encontro das águas.', long:'Passeio em barco típico percorrendo os últimos 13 km do rio, entre ilhas, coqueirais e mangues, com parada de até 1h para banho no lado alagoano.', featured:false },
+      ],
+      features:[
+        { title:'Pioneiros na Foz', text:'Fomos os primeiros a estruturar passeios de ecoturismo na foz do rio São Francisco.' },
+        { title:'ABETA & SEBRAE', text:'Condutores capacitados pela ABETA Nacional e pelo SEBRAE, com padrão técnico e segurança.' },
+        { title:'Experientes em Dunas', text:'Vasta experiência na condução off-road sobre as dunas da região.' },
+        { title:'Ecoturismo Responsável', text:'Uma atividade que respeita e preserva o ecossistema único da foz.' },
+        { title:'Grupos Pequenos', text:'Atendimento personalizado em grupos reduzidos, com mais atenção e segurança.' },
+        { title:'Piaçabuçu · Alagoas', text:'A 140 km de Maceió, na porta de entrada da foz do São Francisco.' },
+      ],
+      fleet:[
+        { name:'Carcará Superbuggy', cap:'Até 6 passageiros', text:'Veículo aberto, potente e ideal para encarar as dunas com adrenalina e segurança.' },
+        { name:'Cabrita L-200', cap:'Até 6 passageiros', text:'Robustez e estabilidade para os trechos de areia fofa e o acesso à restinga.' },
+        { name:'Capivara Ranger', cap:'Até 10 pessoas', text:'Espaçoso e confortável para grupos maiores que querem viver a foz juntos.' },
+      ],
+      reviews:{ score:'4,9', total:'1.164', items:[
+        { name:'Viajante', type:'com amigos', date:'dezembro de 2025', text:'Fui surpreendido de forma positiva. Percebi que seria diferente logo no briefing com o senhor Robério. Superou tudo que eu esperava.' },
+        { name:'Viajante', type:'com a família', date:'dezembro de 2025', text:'Experiência tranquila, bem organizada e enriquecedora, com condutores atenciosos.' },
+        { name:'Viajante', type:'com a família', date:'dezembro de 2025', text:'Seria um pecado perder. Todo o caminho é lindo e a recepção enriquece o passeio. Valeu super a pena!' },
+      ]},
+      gallery:[ {cat:'dunas'}, {cat:'rio'}, {cat:'frota'}, {cat:'base'}, {cat:'dunas'}, {cat:'rio'} ],
+      base:{ intro:'Antes e depois do passeio, você conta com uma base de apoio pensada para o seu conforto e o da sua família — tudo em um só lugar, na porta de entrada da foz do São Francisco.',
+        structure:['Estacionamento privativo gratuito','Vestiários com chuveiros','Sanitários e redário','Loja de moda praia e conveniência'],
+        safety:['Condutores capacitados ABETA & SEBRAE','Acompanhamento em todo o passeio','Embarcações regularizadas na Capitania dos Portos','Coletes e equipamentos revisados'],
+        director:{ name:'Robério Góes', role:'Fundador e Diretor da Farol da Foz Ecoturismo', bio:'Pioneiro no ecoturismo da foz do rio São Francisco, Robério lidera a Farol da Foz com foco em acolhimento, conhecimento da região e experiências seguras em contato com a natureza.' } },
+      contact:{ whatsapp:'(82) 99975-1975', email:'faroldafoztur@hotmail.com', address:'Piaçabuçu · Alagoas · a 140 km de Maceió', instagram:'https://instagram.com/faroldafoz', facebook:'https://facebook.com/faroldafoz' },
+    };
+  }
+
+  componentDidMount(){
+    let data = this.defaults();
+    try { const s = localStorage.getItem('ffAdminData'); if(s) data = JSON.parse(s); } catch(e){}
+    this.setState({ data });
+  }
+
+  persist(data){ try { localStorage.setItem('ffAdminData', JSON.stringify(data)); } catch(e){} }
+  get(path){ return path.split('.').reduce((o,k)=> (o==null?undefined:o[k]), this.state.data); }
+  set(path, v){
+    const parts = path.split('.');
+    const data = structuredClone(this.state.data);
+    let o = data;
+    for (let i=0;i<parts.length-1;i++){ o = o[parts[i]]; }
+    o[parts[parts.length-1]] = v;
+    this.persist(data);
+    this.setState({ data });
+  }
+  mkf(path, label, area){ return { label, value:this.get(path)||'', isArea:!!area, isText:!area, onInput:(e)=>this.set(path, e.target.value) }; }
+
+  addToItem(listPath, item){ const arr = structuredClone(this.get(listPath)); arr.push(item); this.set(listPath, arr); }
+  removeFromItem(listPath, i){ const arr = structuredClone(this.get(listPath)); arr.splice(i,1); this.set(listPath, arr); }
+
+  showToast(msg){ this.setState({ toast:msg }); setTimeout(()=>this.setState({ toast:'' }), 2400); }
+  iconEl(str){ return React.createElement('span', { style:{display:'flex',alignItems:'center',justifyContent:'center'}, dangerouslySetInnerHTML:{__html:str} }); }
+
+  renderVals(){
+    const d = this.state.data;
+    const sec = this.state.section;
+    const go = (k)=>()=>this.setState({ section:k, sidebarOpen:false });
+
+    const icons = {
+      overview:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
+      hero:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 14l5-4 4 3 3-3 6 5"/></svg>',
+      tours:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h18M5 17l2-6h10l2 6M7 11V8a2 2 0 012-2h6a2 2 0 012 2v3"/><circle cx="7.5" cy="19.5" r="1.5"/><circle cx="16.5" cy="19.5" r="1.5"/></svg>',
+      about:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 012-2h10l4 4v12a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 8h6M8 12h8M8 16h5"/></svg>',
+      features:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 6.9H21l-5.3 4 2 6.9-5.7-4.2L6.3 20l2-7L3 9h6.6z"/></svg>',
+      fleet:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l2-5h11l3 5M2 12h20v4H2zM6 16v2M18 16v2"/><circle cx="7" cy="14" r="0"/></svg>',
+      reviews:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5 5.5.8-4 3.9 1 5.5L12 15.5 7 18.2l1-5.5-4-3.9L9.5 8z"/></svg>',
+      gallery:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>',
+      base:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V8l7-4 7 4v13M9 21v-6h6v6"/></svg>',
+      contact:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014 2h3a2 2 0 012 1.7c.1 1 .4 1.9.7 2.8a2 2 0 01-.5 2.1L8.1 9.9a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.4c.9.3 1.8.6 2.8.7a2 2 0 011.7 2z"/></svg>',
+      settings:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.6 1.6 0 00-2.7 1.1V21a2 2 0 11-4 0v-.1A1.6 1.6 0 006 19.4l-.1.1a2 2 0 11-2.8-2.8l.1-.1A1.6 1.6 0 004 12a1.6 1.6 0 00-1.5-1H2a2 2 0 110-4h.1A1.6 1.6 0 004 4.6l-.1-.1a2 2 0 112.8-2.8l.1.1A1.6 1.6 0 009 3V2a2 2 0 114 0v.1A1.6 1.6 0 0018 4.6l.1-.1a2 2 0 112.8 2.8l-.1.1A1.6 1.6 0 0020 12z"/></svg>',
+    };
+    const navDef = [
+      ['overview','Início'],['hero','Topo (Hero)'],['tours','Passeios'],['about','Sobre / História'],
+      ['features','Diferenciais'],['fleet','Frota'],['reviews','Avaliações'],['gallery','Galeria'],
+      ['base','Nossa Base'],['contact','Contato & Rodapé'],['settings','Configurações'],
+    ];
+    const titles = {
+      overview:['Início','Visão geral do que você pode editar'],
+      hero:['Topo do site (Hero)','Título principal, subtítulo e foto de fundo'],
+      tours:['Passeios','Nome, preço, descrição e foto de cada passeio'],
+      about:['Sobre / Nossa História','Textos e foto da seção de apresentação'],
+      features:['Diferenciais','Os 6 destaques da empresa'],
+      fleet:['Frota','Os veículos e suas fotos'],
+      reviews:['Avaliações','Nota e depoimentos dos clientes'],
+      gallery:['Galeria','Fotos exibidas na galeria do site'],
+      base:['Nossa Base','Estrutura, segurança e direção'],
+      contact:['Contato & Rodapé','WhatsApp, e-mail, endereço e redes sociais'],
+      settings:['Configurações','Logo e WhatsApp usado em todo o site'],
+    };
+
+    const nav = navDef.map(([k,label])=>({
+      label, iconEl:this.iconEl(icons[k]), go:go(k),
+      bg: sec===k ? '#f2a900' : 'transparent',
+      color: sec===k ? '#12212f' : 'rgba(255,255,255,.82)',
+    }));
+    const overviewCards = navDef.slice(1).map(([k,label])=>({
+      label, iconEl:this.iconEl(icons[k]), desc:titles[k][1], go:go(k),
+    }));
+
+    const vals = {
+      nav, overviewCards,
+      section: sec,
+      sectionTitle: titles[sec][0], sectionHint: titles[sec][1],
+      sidebarOpen: this.state.sidebarOpen,
+      sidebarCls: this.state.sidebarOpen ? 'open' : '',
+      toggleSidebar: ()=>this.setState(s=>({ sidebarOpen:!s.sidebarOpen })),
+      toast: this.state.toast,
+      publish: ()=>this.showToast('Alterações publicadas no site!'),
+      isOverview: sec==='overview', isHero: sec==='hero', isTours: sec==='tours', isAbout: sec==='about',
+      isFeatures: sec==='features', isFleet: sec==='fleet', isReviews: sec==='reviews', isGallery: sec==='gallery',
+      isBase: sec==='base', isContact: sec==='contact', isSettings: sec==='settings',
+    };
+    if (!d) return vals;
+
+    // Hero
+    vals.heroFields = [
+      this.mkf('hero.badge','Etiqueta de localização (topo)'),
+      this.mkf('hero.title1','Título — 1ª linha'),
+      this.mkf('hero.title2','Título — 2ª linha (destaque dourado)'),
+      this.mkf('hero.subtitle','Subtítulo', true),
+    ];
+    // About
+    vals.aboutFields = [
+      this.mkf('about.eyebrow','Rótulo (ex.: Nossa História)'),
+      this.mkf('about.title','Título'),
+      this.mkf('about.p1','Parágrafo 1', true),
+      this.mkf('about.p2','Parágrafo 2', true),
+    ];
+    // Tours
+    vals.toursUI = d.tours.map((t,i)=>({
+      name: t.name || ('Passeio '+(i+1)),
+      photoId: 'admin-tour-'+i,
+      featured: t.featured,
+      featLabel: t.featured ? '★ Em destaque' : 'Marcar destaque',
+      featBg: t.featured ? '#fdf3d6' : '#fff',
+      featColor: t.featured ? '#a06d00' : '#8592a3',
+      featBorder: t.featured ? '#eBD9a8' : '#dfe3ea',
+      toggleFeatured: ()=>this.set('tours.'+i+'.featured', !t.featured),
+      remove: ()=>this.removeFromItem('tours', i),
+      fields: [
+        this.mkf('tours.'+i+'.name','Nome do passeio'),
+        this.mkf('tours.'+i+'.tag','Etiqueta (aparece sobre a foto)'),
+        this.mkf('tours.'+i+'.price','Preço a partir de (só o número, ex.: 200)'),
+        this.mkf('tours.'+i+'.priceCard','Preço no cartão (ex.: R$ 210)'),
+        this.mkf('tours.'+i+'.duration','Duração'),
+        this.mkf('tours.'+i+'.min','Saída mínima'),
+        this.mkf('tours.'+i+'.short','Descrição curta (card)', true),
+        this.mkf('tours.'+i+'.long','Descrição completa (página do passeio)', true),
+      ],
+    }));
+    vals.addTour = ()=>this.addToItem('tours', { name:'Novo passeio', tag:'', price:'', priceCard:'', duration:'', min:'', short:'', long:'', featured:false });
+    // Features
+    vals.featuresUI = d.features.map((f,i)=>({
+      title:f.title, text:f.text,
+      onTitle:(e)=>this.set('features.'+i+'.title', e.target.value),
+      onText:(e)=>this.set('features.'+i+'.text', e.target.value),
+    }));
+    // Fleet
+    vals.fleetUI = d.fleet.map((v,i)=>({
+      photoId:'admin-fleet-'+i,
+      fields:[
+        this.mkf('fleet.'+i+'.name','Nome do veículo'),
+        this.mkf('fleet.'+i+'.cap','Capacidade (ex.: Até 6 passageiros)'),
+        this.mkf('fleet.'+i+'.text','Descrição', true),
+      ],
+    }));
+    // Reviews
+    vals.reviewMetaFields = [ this.mkf('reviews.score','Nota (ex.: 4,9)'), this.mkf('reviews.total','Total de avaliações') ];
+    vals.reviewsUI = d.reviews.items.map((r,i)=>({
+      num:i+1,
+      remove:()=>this.removeFromItem('reviews.items', i),
+      fields:[
+        this.mkf('reviews.items.'+i+'.name','Nome do cliente'),
+        this.mkf('reviews.items.'+i+'.type','Tipo de viagem (ex.: com a família)'),
+        this.mkf('reviews.items.'+i+'.date','Data (ex.: dezembro de 2025)'),
+        this.mkf('reviews.items.'+i+'.text','Depoimento', true),
+      ],
+    }));
+    vals.addReview = ()=>this.addToItem('reviews.items', { name:'', type:'', date:'', text:'' });
+    // Gallery
+    vals.galleryUI = d.gallery.map((g,i)=>({
+      photoId:'admin-gallery-'+i, cat:g.cat,
+      onCat:(e)=>this.set('gallery.'+i+'.cat', e.target.value),
+      remove:()=>this.removeFromItem('gallery', i),
+    }));
+    vals.addPhoto = ()=>this.addToItem('gallery', { cat:'dunas' });
+    // Base
+    vals.baseIntro = d.base.intro;
+    vals.onBaseIntro = (e)=>this.set('base.intro', e.target.value);
+    vals.baseStructureUI = d.base.structure.map((s,i)=>({ value:s, onInput:(e)=>this.set('base.structure.'+i, e.target.value), remove:()=>this.removeFromItem('base.structure', i) }));
+    vals.baseSafetyUI = d.base.safety.map((s,i)=>({ value:s, onInput:(e)=>this.set('base.safety.'+i, e.target.value), remove:()=>this.removeFromItem('base.safety', i) }));
+    vals.addStructure = ()=>this.addToItem('base.structure', 'Novo item');
+    vals.addSafety = ()=>this.addToItem('base.safety', 'Novo item');
+    vals.directorFields = [
+      this.mkf('base.director.name','Nome'),
+      this.mkf('base.director.role','Cargo'),
+      this.mkf('base.director.bio','Biografia', true),
+    ];
+    // Contact
+    vals.contactFields = [
+      this.mkf('contact.whatsapp','WhatsApp'),
+      this.mkf('contact.email','E-mail'),
+      this.mkf('contact.address','Endereço'),
+      this.mkf('contact.instagram','Instagram (link)'),
+      this.mkf('contact.facebook','Facebook (link)'),
+    ];
+    // Settings
+    vals.settingsFields = [
+      this.mkf('settings.whatsapp','Número de WhatsApp (todos os botões)'),
+      this.mkf('settings.email','E-mail principal'),
+    ];
+    return vals;
+  }
+}
+</script>
+</body>
+</html>
