@@ -10,6 +10,9 @@ export interface Settings {
   logoDark: string
   whatsapp: string // digits only, e.g. "5582999751975"
   email: string
+  // When true, the "Reservar" buttons open the pre-reservation form instead of
+  // going straight to WhatsApp. Defaults to false (current behaviour).
+  bookingEnabled: boolean
 }
 
 export interface Hero {
@@ -54,7 +57,8 @@ export interface Tour {
 export interface FleetVehicle {
   id: string
   name: string
-  capacity: string
+  capacity: string // display string, e.g. "Até 6 passageiros"
+  seats: number // numeric capacity, used for occupancy math in the admin
   text: string
   images: string[]
 }
@@ -127,6 +131,7 @@ export const defaultContent: SiteContent = {
     logoDark: A('logo-dark.png'),
     whatsapp: '5582999751975',
     email: 'faroldafoztur@hotmail.com',
+    bookingEnabled: false,
   },
   hero: {
     label: 'Foz do Rio São Francisco · Piaçabuçu · Alagoas',
@@ -244,6 +249,7 @@ export const defaultContent: SiteContent = {
       id: 'carcara',
       name: 'Carcará Superbuggy',
       capacity: 'Até 6 passageiros',
+      seats: 6,
       text: 'Veículo aberto, potente e ideal para encarar as dunas com adrenalina e segurança.',
       images: [A('carcara-superbuggy.jpeg'), A('hero-buggy.png'), A('opt-1.png')],
     },
@@ -251,6 +257,7 @@ export const defaultContent: SiteContent = {
       id: 'cabrita',
       name: 'Cabrita L-200',
       capacity: 'Até 6 passageiros',
+      seats: 6,
       text: 'Robustez e estabilidade para os trechos de areia fofa e o acesso à restinga.',
       images: [A('cabrita-l200.jpeg')],
     },
@@ -258,6 +265,7 @@ export const defaultContent: SiteContent = {
       id: 'capivara',
       name: 'Capivara Ranger',
       capacity: 'Até 10 pessoas',
+      seats: 10,
       text: 'Espaçoso e confortável para grupos maiores que querem viver a foz juntos.',
       images: [A('capivara-ranger.jpeg')],
     },

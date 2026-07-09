@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import type { SiteContent, Tour } from '../../lib/content'
-import { waLink } from '../../lib/wa'
 import { Clock, Users, Check, WhatsApp, ChevronLeft } from '../Icons'
 import Reveal from '../Reveal'
+import ReserveButton from './ReserveButton'
 
 function SectionHead({ label, title, sub }: { label: string; title: string; sub: string }) {
   return (
@@ -20,7 +20,7 @@ function SectionHead({ label, title, sub }: { label: string; title: string; sub:
   )
 }
 
-function TourDetail({ tour, phone, onClose }: { tour: Tour; phone: string; onClose: () => void }) {
+function TourDetail({ tour, onClose }: { tour: Tour; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[70] overflow-y-auto bg-cream">
       <div className="mx-auto max-w-[1080px] px-5 py-6 sm:px-8">
@@ -81,14 +81,12 @@ function TourDetail({ tour, phone, onClose }: { tour: Tour; phone: string; onClo
                 <dd className="text-right font-semibold text-navy">{tour.min}</dd>
               </div>
             </dl>
-            <a
-              href={waLink(phone, tour.title)}
-              target="_blank"
-              rel="noreferrer"
+            <ReserveButton
+              tour={tour}
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-wa px-5 py-3.5 font-heading font-bold text-white hover:opacity-95"
             >
               <WhatsApp /> Reservar pelo WhatsApp
-            </a>
+            </ReserveButton>
           </aside>
         </div>
       </div>
@@ -98,7 +96,6 @@ function TourDetail({ tour, phone, onClose }: { tour: Tour; phone: string; onClo
 
 export default function Tours({ content }: { content: SiteContent }) {
   const [active, setActive] = useState<Tour | null>(null)
-  const phone = content.settings.whatsapp
 
   return (
     <section id="passeios" className="px-5 py-14 sm:px-8 sm:py-24" style={{ background: 'linear-gradient(180deg,#faf8f3,#fdf6e6)' }}>
@@ -138,14 +135,12 @@ export default function Tours({ content }: { content: SiteContent }) {
                   </span>
                 </div>
                 <div className="flex flex-col gap-2.5">
-                  <a
-                    href={waLink(phone, t.title)}
-                    target="_blank"
-                    rel="noreferrer"
+                  <ReserveButton
+                    tour={t}
                     className="inline-flex items-center justify-center gap-2 rounded-xl bg-wa px-3 py-3.5 font-heading text-[14.5px] font-bold text-white hover:opacity-95"
                   >
                     Reservar agora
-                  </a>
+                  </ReserveButton>
                   <button
                     onClick={() => setActive(t)}
                     className="rounded-xl border-[1.5px] border-[#ead9ab] bg-transparent px-3 py-2.5 font-heading text-[13px] font-bold text-gold-text transition hover:border-gold hover:bg-cream-warm"
@@ -160,7 +155,7 @@ export default function Tours({ content }: { content: SiteContent }) {
         </div>
       </div>
 
-      {active && <TourDetail tour={active} phone={phone} onClose={() => setActive(null)} />}
+      {active && <TourDetail tour={active} onClose={() => setActive(null)} />}
     </section>
   )
 }

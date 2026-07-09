@@ -1,6 +1,6 @@
 import type { SiteContent } from '../../lib/content'
-import { waLink } from '../../lib/wa'
 import { WhatsApp, ChevronDown, Pin } from '../Icons'
+import ReserveButton from './ReserveButton'
 
 export default function Hero({ content }: { content: SiteContent }) {
   const { hero } = content
@@ -45,15 +45,12 @@ export default function Hero({ content }: { content: SiteContent }) {
           {hero.subtitle}
         </p>
         <div className="flex animate-ffFade flex-wrap justify-center gap-[14px]" style={{ animationDelay: '.24s' }}>
-          <a
-            href={waLink(content.settings.whatsapp)}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-[10px] rounded-full bg-wa px-8 py-[17px] font-heading font-bold text-white transition-transform hover:-translate-y-0.5"
-            style={{ fontSize: 'clamp(15px,2vw,17px)', boxShadow: '0 16px 36px -12px rgba(37,211,102,.7)' }}
+          <ReserveButton
+            className="inline-flex items-center gap-[10px] rounded-full bg-wa px-8 py-[17px] font-heading font-bold text-white shadow-[0_16px_36px_-12px_rgba(37,211,102,.7)] transition-transform hover:-translate-y-0.5"
+            style={{ fontSize: 'clamp(15px,2vw,17px)' }}
           >
             <WhatsApp /> Reservar pelo WhatsApp
-          </a>
+          </ReserveButton>
           <a
             href="#passeios"
             className="inline-flex items-center gap-[10px] rounded-full border-[1.5px] border-white/65 bg-white/[.14] px-[30px] py-[17px] font-heading font-semibold text-white backdrop-blur-sm transition hover:bg-white/25"

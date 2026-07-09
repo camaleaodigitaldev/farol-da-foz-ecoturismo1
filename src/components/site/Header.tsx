@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { SiteContent } from '../../lib/content'
-import { waLink } from '../../lib/wa'
 import { Menu, Close, WhatsApp } from '../Icons'
+import ReserveButton from './ReserveButton'
 
 const NAV = [
   { href: '#passeios', label: 'Passeios' },
@@ -22,8 +22,6 @@ export default function Header({ content }: { content: SiteContent }) {
     onScroll()
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
-
-  const wa = waLink(content.settings.whatsapp)
 
   return (
     <>
@@ -61,15 +59,11 @@ export default function Header({ content }: { content: SiteContent }) {
             ))}
           </nav>
 
-          <a
-            href={wa}
-            target="_blank"
-            rel="noreferrer"
-            className="hidden items-center gap-2 rounded-full bg-gold px-[22px] py-[11px] font-heading text-sm font-bold text-navy transition hover:bg-[#ffbb1a] lg:inline-flex"
-            style={{ boxShadow: '0 8px 20px -8px rgba(242,169,0,.8)' }}
+          <ReserveButton
+            className="hidden items-center gap-2 rounded-full bg-gold px-[22px] py-[11px] font-heading text-sm font-bold text-navy shadow-[0_8px_20px_-8px_rgba(242,169,0,.8)] transition hover:bg-[#ffbb1a] lg:inline-flex"
           >
             Reservar
-          </a>
+          </ReserveButton>
 
           <button
             onClick={() => setMenuOpen(true)}
@@ -114,15 +108,12 @@ export default function Header({ content }: { content: SiteContent }) {
               </a>
             ))}
           </nav>
-          <a
-            href={wa}
-            target="_blank"
-            rel="noreferrer"
-            onClick={() => setMenuOpen(false)}
+          <ReserveButton
+            onNavigate={() => setMenuOpen(false)}
             className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-wa px-6 py-4 font-heading font-bold text-white"
           >
             <WhatsApp /> Reservar pelo WhatsApp
-          </a>
+          </ReserveButton>
         </aside>
       </div>
     </>
