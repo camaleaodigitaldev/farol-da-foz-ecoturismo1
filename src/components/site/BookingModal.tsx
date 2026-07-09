@@ -305,7 +305,7 @@ export default function BookingModal() {
                       key={d}
                       disabled={past}
                       onClick={() => pickDate(isoDay)}
-                      className="flex flex-col items-center rounded-lg py-1.5 transition disabled:cursor-default"
+                      className="flex items-center justify-center rounded-lg py-2.5 transition disabled:cursor-default"
                       style={{
                         background: sel ? '#f2a900' : past ? 'transparent' : '#faf8f3',
                       }}
@@ -313,11 +313,6 @@ export default function BookingModal() {
                       <span className="font-heading text-[14px] font-bold" style={{ color: past ? '#c3cbd6' : '#1a2b3d' }}>
                         {d}
                       </span>
-                      {!past && selectedTour && (
-                        <span className="font-body text-[9.5px] font-semibold" style={{ color: sel ? '#1a2b3d' : '#a06d00' }}>
-                          R$ {selectedTour.price}
-                        </span>
-                      )}
                     </button>
                   )
                 })}
@@ -364,6 +359,13 @@ export default function BookingModal() {
                 +
               </button>
             </div>
+            {selectedTour && Number(selectedTour.price) > 0 && (
+              <p className="mb-1.5 font-body text-[13px] text-muted">
+                Valor estimado:{' '}
+                <strong className="font-semibold text-navy">R$ {people * Number(selectedTour.price)}</strong>
+                <span className="text-[11.5px]"> ({people} × R$ {selectedTour.price} · a combinar no WhatsApp)</span>
+              </p>
+            )}
             <p className="mb-6 font-body text-xs text-muted">
               {selectedTour?.min ? `Saída mínima: ${selectedTour.min}` : 'Escolha quantas pessoas vão no passeio.'}
             </p>
