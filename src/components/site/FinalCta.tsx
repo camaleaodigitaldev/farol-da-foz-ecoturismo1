@@ -1,11 +1,12 @@
 import type { SiteContent } from '../../lib/content'
 import { waLink } from '../../lib/wa'
 import { WhatsApp } from '../Icons'
+import Reveal from '../Reveal'
 
 export default function FinalCta({ content }: { content: SiteContent }) {
   return (
     <section className="px-5 py-16 sm:px-8 sm:py-24" style={{ background: 'linear-gradient(180deg,#1a2b3d,#12212f)' }}>
-      <div className="mx-auto max-w-[820px] text-center text-white">
+      <Reveal as="div" className="mx-auto max-w-[820px] text-center text-white">
         <h2 className="mb-4 font-heading font-bold leading-[1.05]" style={{ fontSize: 'clamp(28px,5vw,48px)', letterSpacing: '-.02em' }}>
           Pronto para sua aventura?
         </h2>
@@ -21,7 +22,7 @@ export default function FinalCta({ content }: { content: SiteContent }) {
         >
           <WhatsApp /> Reservar pelo WhatsApp
         </a>
-      </div>
+      </Reveal>
     </section>
   )
 }

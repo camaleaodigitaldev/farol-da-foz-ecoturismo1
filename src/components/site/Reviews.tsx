@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import type { SiteContent } from '../../lib/content'
 import { Star, ChevronLeft, ChevronRight } from '../Icons'
+import Reveal from '../Reveal'
 
 export default function Reviews({ content }: { content: SiteContent }) {
   const track = useRef<HTMLDivElement>(null)
@@ -14,7 +15,7 @@ export default function Reviews({ content }: { content: SiteContent }) {
   return (
     <section id="depoimentos" className="bg-white px-5 py-14 sm:px-8 sm:py-24">
       <div className="mx-auto max-w-content">
-        <div className="mb-10 flex flex-col items-center gap-6 sm:mb-12 md:flex-row md:items-end md:justify-between">
+        <Reveal as="div" className="mb-10 flex flex-col items-center gap-6 sm:mb-12 md:flex-row md:items-end md:justify-between">
           <div className="max-w-[560px] text-center md:text-left">
             <span className="mb-3.5 inline-block font-heading text-xs font-bold uppercase tracking-[.14em] text-gold-text">Avaliações</span>
             <h2 className="mb-3 font-heading font-bold leading-[1.08] text-navy" style={{ fontSize: 'clamp(26px,4vw,42px)', letterSpacing: '-.02em' }}>
@@ -34,9 +35,9 @@ export default function Reviews({ content }: { content: SiteContent }) {
               </span>
             </div>
           </div>
-        </div>
+        </Reveal>
 
-        <div className="relative">
+        <Reveal as="div" delay={120} className="relative">
           <div ref={track} className="no-scrollbar flex snap-x gap-4 overflow-x-auto pb-2" id="reviews-track">
             {reviews.items.map((r) => (
               <article key={r.id} className="w-[300px] shrink-0 snap-start rounded-card border border-[#eef1f5] bg-white p-6 shadow-card">
@@ -71,7 +72,7 @@ export default function Reviews({ content }: { content: SiteContent }) {
           <button onClick={() => scroll(1)} aria-label="Próximo" className="absolute -right-3 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#e3e7ee] bg-white text-navy shadow-card hover:border-gold md:flex">
             <ChevronRight size={20} />
           </button>
-        </div>
+        </Reveal>
 
         <div className="mt-9 text-center">
           <a

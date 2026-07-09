@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { SiteContent, Tour } from '../../lib/content'
 import { waLink } from '../../lib/wa'
 import { Clock, Users, Check, WhatsApp, ChevronLeft } from '../Icons'
+import Reveal from '../Reveal'
 
 function SectionHead({ label, title, sub }: { label: string; title: string; sub: string }) {
   return (
@@ -102,12 +103,14 @@ export default function Tours({ content }: { content: SiteContent }) {
   return (
     <section id="passeios" className="px-5 py-14 sm:px-8 sm:py-24" style={{ background: 'linear-gradient(180deg,#faf8f3,#fdf6e6)' }}>
       <div className="mx-auto max-w-content">
-        <SectionHead label="Nossos Roteiros" title="Nossos Passeios" sub="Escolha a sua aventura e reserve agora mesmo pelo WhatsApp." />
+        <Reveal>
+          <SectionHead label="Nossos Roteiros" title="Nossos Passeios" sub="Escolha a sua aventura e reserve agora mesmo pelo WhatsApp." />
+        </Reveal>
         <div className="grid gap-5 sm:gap-6 md:grid-cols-3">
-          {content.tours.map((t) => (
+          {content.tours.map((t, i) => (
+            <Reveal key={t.id} delay={i * 110} className="h-full">
             <article
-              key={t.id}
-              className="relative flex flex-col overflow-hidden rounded-card border border-[#f0e6cc] bg-white shadow-card transition-all duration-200 hover:-translate-y-2 hover:shadow-[0_36px_62px_-30px_rgba(26,43,61,.55)]"
+              className="relative flex h-full flex-col overflow-hidden rounded-card border border-[#f0e6cc] bg-white shadow-card transition-all duration-200 hover:-translate-y-2 hover:shadow-[0_36px_62px_-30px_rgba(26,43,61,.55)]"
             >
               {t.featured && (
                 <div className="absolute right-3 top-3 z-[4] rounded-md bg-white/90 px-3 py-1.5 font-heading text-[10.5px] font-semibold tracking-[.1em] text-navy">
@@ -152,6 +155,7 @@ export default function Tours({ content }: { content: SiteContent }) {
                 </div>
               </div>
             </article>
+            </Reveal>
           ))}
         </div>
       </div>

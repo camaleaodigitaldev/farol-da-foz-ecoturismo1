@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { SiteContent, GalleryItem } from '../../lib/content'
 import { ChevronLeft, ChevronRight, Close } from '../Icons'
+import Reveal from '../Reveal'
 
 const FILTERS = [
   { key: 'todos', label: 'Todos' },
@@ -24,7 +25,7 @@ export default function Gallery({ content }: { content: SiteContent }) {
   return (
     <section id="galeria" className="bg-cream-warm px-5 py-14 sm:px-8 sm:py-24">
       <div className="mx-auto max-w-content">
-        <div className="mb-8 flex flex-col items-center gap-4 text-center sm:mb-12 md:flex-row md:justify-between md:text-left">
+        <Reveal as="div" className="mb-8 flex flex-col items-center gap-4 text-center sm:mb-12 md:flex-row md:justify-between md:text-left">
           <div>
             <span className="mb-3.5 inline-block font-heading text-xs font-bold uppercase tracking-[.14em] text-gold-text">Galeria</span>
             <h2 className="font-heading font-bold leading-[1.08] text-navy" style={{ fontSize: 'clamp(26px,4vw,42px)', letterSpacing: '-.02em' }}>
@@ -37,9 +38,9 @@ export default function Gallery({ content }: { content: SiteContent }) {
           >
             Ver galeria completa
           </button>
-        </div>
+        </Reveal>
 
-        <div className="no-scrollbar flex gap-4 overflow-x-auto pb-2">
+        <Reveal as="div" delay={120} className="no-scrollbar flex gap-4 overflow-x-auto pb-2">
           {preview.map((g) => (
             <button
               key={g.id}
@@ -53,7 +54,7 @@ export default function Gallery({ content }: { content: SiteContent }) {
               <img src={g.src} alt={g.alt} className="h-full w-full object-cover transition-transform duration-300 hover:scale-105" />
             </button>
           ))}
-        </div>
+        </Reveal>
       </div>
 
       {/* Full gallery overlay */}

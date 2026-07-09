@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { SiteContent } from '../../lib/content'
 import { ArrowRight } from '../Icons'
+import Reveal from '../Reveal'
 
 export default function About({ content }: { content: SiteContent }) {
   const [expanded, setExpanded] = useState(false)
@@ -10,13 +11,15 @@ export default function About({ content }: { content: SiteContent }) {
   return (
     <section id="sobre" className="bg-cream px-5 py-14 sm:px-8 sm:py-24">
       <div className="mx-auto grid max-w-[1140px] items-center gap-8 sm:gap-16 md:grid-cols-2">
-        <img
-          src={about.image}
-          alt="Foz do Rio São Francisco"
-          className="w-full rounded-card object-cover shadow-[0_24px_50px_-34px_rgba(26,43,61,.45)]"
-          style={{ height: 'clamp(320px,44vw,500px)' }}
-        />
-        <div>
+        <Reveal>
+          <img
+            src={about.image}
+            alt="Foz do Rio São Francisco"
+            className="w-full rounded-card object-cover shadow-[0_24px_50px_-34px_rgba(26,43,61,.45)]"
+            style={{ height: 'clamp(320px,44vw,500px)' }}
+          />
+        </Reveal>
+        <Reveal delay={140}>
           <span className="mb-4 inline-block font-heading text-xs font-bold uppercase tracking-[.14em] text-gold-text">
             {about.label}
           </span>
@@ -39,7 +42,7 @@ export default function About({ content }: { content: SiteContent }) {
               <ArrowRight />
             </button>
           )}
-        </div>
+        </Reveal>
       </div>
     </section>
   )

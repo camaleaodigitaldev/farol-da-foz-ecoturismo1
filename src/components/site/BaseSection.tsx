@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { SiteContent } from '../../lib/content'
 import { waLink } from '../../lib/wa'
 import { Building, Shield, Check, Close, WhatsApp } from '../Icons'
+import Reveal from '../Reveal'
 
 export default function BaseSection({ content }: { content: SiteContent }) {
   const [open, setOpen] = useState(false)
@@ -10,7 +11,7 @@ export default function BaseSection({ content }: { content: SiteContent }) {
   return (
     <section id="base" className="bg-cream px-5 py-14 sm:px-8 sm:py-24">
       <div className="mx-auto grid max-w-[1140px] items-center gap-8 sm:gap-16 md:grid-cols-2">
-        <div>
+        <Reveal>
           <span className="mb-4 inline-block font-heading text-xs font-bold uppercase tracking-[.14em] text-gold-text">Nossa Base</span>
           <h2 className="mb-6 font-heading font-bold leading-[1.08] text-navy" style={{ fontSize: 'clamp(26px,4vw,42px)', letterSpacing: '-.02em' }}>
             Estrutura completa para a sua aventura
@@ -51,9 +52,9 @@ export default function BaseSection({ content }: { content: SiteContent }) {
               Conheça nossa estrutura
             </button>
           </div>
-        </div>
+        </Reveal>
 
-        <div className="grid grid-cols-2 gap-3">
+        <Reveal as="div" delay={140} className="grid grid-cols-2 gap-3">
           {base.images.slice(0, 4).map((src, i) => (
             <img
               key={i}
@@ -62,7 +63,7 @@ export default function BaseSection({ content }: { content: SiteContent }) {
               className={`w-full rounded-card object-cover shadow-card ${i === 0 ? 'col-span-2 h-[220px]' : 'h-[160px]'}`}
             />
           ))}
-        </div>
+        </Reveal>
       </div>
 
       {/* Base overlay */}
