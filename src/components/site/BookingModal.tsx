@@ -1,27 +1,34 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useBooking } from '../../lib/BookingContext'
 import { createReservation, type Departure } from '../../lib/reservations'
-import { waBookingLink } from '../../lib/wa'
-import { Close, WhatsApp, Check } from '../Icons'
+import { waBookingLink, formatDateBR } from '../../lib/wa'
+import { Close, WhatsApp, Check, ChevronLeft, ChevronRight } from '../Icons'
 
 const DEPARTURES: Departure[] = ['09h', '14h']
+const MONTHS = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
 
-// local YYYY-MM-DD for the date input min (no UTC shift)
+const pad = (n: number) => String(n).padStart(2, '0')
+const isoOf = (y: number, m: number, d: number) => `${y}-${pad(m + 1)}-${pad(d)}`
+
+// local YYYY-MM-DD (no UTC shift)
 function todayISO(): string {
   const d = new Date()
-  const m = String(d.getMonth() + 1).padStart(2, '0')
-  const day = String(d.getDate()).padStart(2, '0')
-  return `${d.getFullYear()}-${m}-${day}`
+  return isoOf(d.getFullYear(), d.getMonth(), d.getDate())
 }
+
+type Step = 'tour' | 'date' | 'people' | 'details'
 
 export default function BookingModal() {
   const { open, preselectedTour, content, phone, closeBooking } = useBooking()
   const tours = content.tours
-  const min = todayISO()
+  const minISO = todayISO()
 
+  const [step, setStep] = useState<Step>('tour')
   const [tourId, setTourId] = useState('')
+  const [view, setView] = useState({ y: 0, m: 0 }) // calendar month in view
   const [date, setDate] = useState('')
-  const [departure, setDeparture] = useState<Departure>('09h')
+  const [departure, setDeparture] = useState<Departure | null>(null)
   const [people, setPeople] = useState(2)
   const [name, setName] = useState('')
   const [phoneField, setPhoneField] = useState('')
@@ -39,9 +46,12 @@ export default function BookingModal() {
   // (re)initialise each time the modal opens
   useEffect(() => {
     if (open) {
-      setTourId(preselectedTour?.id ?? tours[0]?.id ?? '')
+      const now = new Date()
+      setView({ y: now.getFullYear(), m: now.getMonth() })
+      setTourId(preselectedTour?.id ?? '')
+      setStep(preselectedTour ? 'date' : 'tour')
       setDate('')
-      setDeparture('09h')
+      setDeparture(null)
       setPeople(2)
       setName('')
       setPhoneField('')
@@ -55,7 +65,7 @@ export default function BookingModal() {
       setSubmitting(false)
       setOpenedAt(Date.now())
     }
-  }, [open, preselectedTour, tours])
+  }, [open, preselectedTour])
 
   // lock body scroll while open
   useEffect(() => {
@@ -72,6 +82,32 @@ export default function BookingModal() {
 
   if (!open) return null
 
+  // ---- calendar helpers ------------------------------------------------
+  const firstWeekday = new Date(view.y, view.m, 1).getDay()
+  const daysInMonth = new Date(view.y, view.m + 1, 0).getDate()
+  const now = new Date()
+  const atCurrentMonth = view.y === now.getFullYear() && view.m === now.getMonth()
+  const stepMonth = (dir: number) => {
+    setView((v) => {
+      const m = v.m + dir
+      if (m < 0) return { y: v.y - 1, m: 11 }
+      if (m > 11) return { y: v.y + 1, m: 0 }
+      return { ...v, m }
+    })
+  }
+
+  const pickDate = (isoDay: string) => {
+    setDate(isoDay)
+    setDeparture(null)
+  }
+
+  const goBack = () => {
+    setError('')
+    if (step === 'date') setStep('tour')
+    else if (step === 'people') setStep('date')
+    else if (step === 'details') setStep('people')
+  }
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
@@ -79,9 +115,8 @@ export default function BookingModal() {
     const digits = phoneField.replace(/\D/g, '')
     if (!name.trim()) return setError('Informe seu nome.')
     if (digits.length < 10) return setError('Informe um WhatsApp válido com DDD.')
-    if (!tourId) return setError('Escolha um passeio.')
-    if (!date) return setError('Escolha a data do passeio.')
-    if (date < min) return setError('A data deve ser hoje ou no futuro.')
+    if (!tourId || !date || !departure) return setError('Volte e escolha passeio, data e horário.')
+    if (date < minISO) return setError('A data deve ser hoje ou no futuro.')
     if (people < 1) return setError('Informe o número de pessoas.')
     if (!accepted) return setError('É necessário aceitar a política de cancelamento.')
     // honeypot / too-fast bot guard
@@ -118,6 +153,14 @@ export default function BookingModal() {
     'w-full rounded-xl border border-[#e3e7ee] bg-white px-3.5 py-2.5 font-body text-sm text-navy outline-none focus:border-gold'
   const labelCls = 'mb-1.5 block font-heading text-[13px] font-semibold text-navy'
 
+  const STEP_TITLES: Record<Step, string> = {
+    tour: 'Escolha o passeio',
+    date: 'Selecione a data',
+    people: 'Quantas pessoas?',
+    details: 'Seus dados',
+  }
+  const STEP_INDEX: Record<Step, number> = { tour: 1, date: 2, people: 3, details: 4 }
+
   return (
     <>
     <div className="fixed inset-0 z-[90] flex items-end justify-center bg-navy/60 p-0 sm:items-center sm:p-4" onClick={closeBooking}>
@@ -125,24 +168,49 @@ export default function BookingModal() {
         className="max-h-[92vh] w-full max-w-[520px] overflow-y-auto rounded-t-3xl bg-cream p-6 shadow-2xl sm:rounded-3xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mb-5 flex items-start justify-between gap-4">
-          <div>
-            <h2 className="font-heading text-xl font-bold text-navy">Fazer pré-reserva</h2>
-            <p className="mt-1 font-body text-sm text-muted">
-              Escolha os detalhes e finalize a confirmação pelo WhatsApp.
-            </p>
+        {/* Header */}
+        <div className="mb-4 flex items-start justify-between gap-4">
+          <div className="flex items-center gap-2">
+            {!done && step !== 'tour' && !(step === 'date' && preselectedTour) && (
+              <button onClick={goBack} aria-label="Voltar" className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-white text-navy shadow-sm hover:text-gold-text">
+                <ChevronLeft size={18} />
+              </button>
+            )}
+            <div>
+              <h2 className="font-heading text-xl font-bold text-navy">{done ? 'Pré-reserva enviada!' : STEP_TITLES[step]}</h2>
+              {!done && <p className="mt-0.5 font-body text-xs text-muted">Passo {STEP_INDEX[step]} de 4 · pagamento pelo WhatsApp</p>}
+            </div>
           </div>
           <button onClick={closeBooking} aria-label="Fechar" className="shrink-0 text-navy hover:text-gold-text">
             <Close />
           </button>
         </div>
 
+        {/* Selection summary chips */}
+        {!done && (selectedTour || date || departure) && (
+          <div className="mb-4 flex flex-wrap gap-1.5">
+            {selectedTour && (
+              <span className="rounded-full bg-navy px-3 py-1 font-heading text-[11px] font-bold text-white">{selectedTour.title}</span>
+            )}
+            {date && (
+              <span className="rounded-full bg-gold px-3 py-1 font-heading text-[11px] font-bold text-navy">{formatDateBR(date)}</span>
+            )}
+            {departure && (
+              <span className="rounded-full bg-gold px-3 py-1 font-heading text-[11px] font-bold text-navy">Saída {departure}</span>
+            )}
+            {step === 'details' && (
+              <span className="rounded-full bg-gold px-3 py-1 font-heading text-[11px] font-bold text-navy">
+                {people} {people === 1 ? 'pessoa' : 'pessoas'}
+              </span>
+            )}
+          </div>
+        )}
+
         {done ? (
           <div className="py-6 text-center">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-wa/15 text-wa">
               <Check size={34} />
             </div>
-            <h3 className="mb-2 font-heading text-lg font-bold text-navy">Pré-reserva enviada!</h3>
             <p className="mx-auto mb-6 max-w-[36ch] font-body text-sm text-muted">
               Abrimos o WhatsApp com o resumo. A confirmação e o pagamento são feitos por lá.
               Se a janela não abriu, toque no botão abaixo.
@@ -152,7 +220,7 @@ export default function BookingModal() {
                 name: name.trim(),
                 tourTitle: selectedTour?.title ?? 'Passeio',
                 date,
-                departure,
+                departure: departure ?? '09h',
                 people,
               })}
               target="_blank"
@@ -167,64 +235,148 @@ export default function BookingModal() {
               </button>
             </div>
           </div>
-        ) : (
-          <form onSubmit={submit} className="space-y-4">
-            <div>
-              <label className={labelCls}>Passeio</label>
-              <select value={tourId} onChange={(e) => setTourId(e.target.value)} className={inputCls}>
-                {tours.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.title}
-                  </option>
+        ) : step === 'tour' ? (
+          /* ---------------- Step 1: tour ---------------- */
+          <div className="space-y-2.5">
+            {tours.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => {
+                  setTourId(t.id)
+                  setStep('date')
+                }}
+                className="flex w-full items-center gap-3 rounded-2xl border border-[#f0e6cc] bg-white p-3 text-left transition hover:border-gold"
+              >
+                <img src={t.image} alt={t.title} className="h-14 w-14 shrink-0 rounded-xl object-cover" />
+                <span className="flex-1">
+                  <span className="block font-heading text-[15px] font-bold text-navy">{t.title}</span>
+                  <span className="block font-body text-xs text-muted">
+                    a partir de <strong className="text-gold-text">R$ {t.price}</strong> · {t.duration}
+                  </span>
+                </span>
+                <ChevronRight size={18} className="shrink-0 text-gold-text" />
+              </button>
+            ))}
+          </div>
+        ) : step === 'date' ? (
+          /* ---------------- Step 2: calendar + time ---------------- */
+          <div>
+            <div className="rounded-2xl border border-[#f0e6cc] bg-white p-4">
+              <div className="mb-3 flex items-center justify-between">
+                <button
+                  onClick={() => stepMonth(-1)}
+                  disabled={atCurrentMonth}
+                  aria-label="Mês anterior"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-cream text-navy disabled:opacity-30"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <span className="font-heading text-[15px] font-bold text-navy">
+                  {MONTHS[view.m]} {view.y}
+                </span>
+                <button
+                  onClick={() => stepMonth(1)}
+                  aria-label="Próximo mês"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-gold text-navy"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
+
+              <div className="mb-1 grid grid-cols-7 text-center">
+                {WEEKDAYS.map((w) => (
+                  <span key={w} className="py-1 font-heading text-[11px] font-semibold text-muted">
+                    {w}
+                  </span>
                 ))}
-              </select>
+              </div>
+
+              <div className="grid grid-cols-7 gap-1">
+                {Array.from({ length: firstWeekday }).map((_, i) => (
+                  <span key={`b${i}`} />
+                ))}
+                {Array.from({ length: daysInMonth }).map((_, i) => {
+                  const d = i + 1
+                  const isoDay = isoOf(view.y, view.m, d)
+                  const past = isoDay < minISO
+                  const sel = isoDay === date
+                  return (
+                    <button
+                      key={d}
+                      disabled={past}
+                      onClick={() => pickDate(isoDay)}
+                      className="flex flex-col items-center rounded-lg py-1.5 transition disabled:cursor-default"
+                      style={{
+                        background: sel ? '#f2a900' : past ? 'transparent' : '#faf8f3',
+                      }}
+                    >
+                      <span className="font-heading text-[14px] font-bold" style={{ color: past ? '#c3cbd6' : '#1a2b3d' }}>
+                        {d}
+                      </span>
+                      {!past && selectedTour && (
+                        <span className="font-body text-[9.5px] font-semibold" style={{ color: sel ? '#1a2b3d' : '#a06d00' }}>
+                          R$ {selectedTour.price}
+                        </span>
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label className={labelCls}>Data</label>
-                <input type="date" min={min} value={date} onChange={(e) => setDate(e.target.value)} className={inputCls} />
-              </div>
-              <div>
-                <label className={labelCls}>Saída</label>
-                <div className="flex gap-2">
-                  {DEPARTURES.map((d) => {
-                    const on = departure === d
-                    return (
-                      <button
-                        key={d}
-                        type="button"
-                        onClick={() => setDeparture(d)}
-                        className="flex-1 rounded-xl border py-2.5 font-heading text-sm font-bold transition"
-                        style={{
-                          background: on ? '#f2a900' : '#fff',
-                          color: on ? '#1a2b3d' : '#5c6b7e',
-                          borderColor: on ? '#f2a900' : '#e3e7ee',
-                        }}
-                      >
-                        {d}
-                      </button>
-                    )
-                  })}
+            {date && (
+              <div className="mt-4">
+                <p className="mb-2 text-center font-heading text-sm font-bold text-navy">Escolha um horário</p>
+                <div className="flex gap-3">
+                  {DEPARTURES.map((dep) => (
+                    <button
+                      key={dep}
+                      onClick={() => {
+                        setDeparture(dep)
+                        setStep('people')
+                      }}
+                      className="flex-1 rounded-xl border border-[#e3e7ee] bg-white py-3.5 font-heading text-[15px] font-bold text-navy transition hover:border-gold hover:bg-cream-warm"
+                    >
+                      {dep === '09h' ? '09:00' : '14:00'}
+                    </button>
+                  ))}
                 </div>
               </div>
+            )}
+          </div>
+        ) : step === 'people' ? (
+          /* ---------------- Step 3: people ---------------- */
+          <div className="text-center">
+            <div className="mx-auto mb-4 flex items-center justify-center gap-5">
+              <button
+                onClick={() => setPeople((p) => Math.max(1, p - 1))}
+                aria-label="Menos pessoas"
+                className="flex h-12 w-12 items-center justify-center rounded-full border border-[#e3e7ee] bg-white font-heading text-2xl font-bold text-navy hover:border-gold"
+              >
+                −
+              </button>
+              <span className="w-16 font-heading text-4xl font-bold text-navy">{people}</span>
+              <button
+                onClick={() => setPeople((p) => Math.min(60, p + 1))}
+                aria-label="Mais pessoas"
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-gold font-heading text-2xl font-bold text-navy hover:bg-[#ffbb1a]"
+              >
+                +
+              </button>
             </div>
-
-            <div>
-              <label className={labelCls}>Número de pessoas</label>
-              <input
-                type="number"
-                min={1}
-                max={60}
-                value={people}
-                onChange={(e) => setPeople(Math.max(1, Number(e.target.value) || 1))}
-                className={inputCls}
-              />
-              {selectedTour?.min && (
-                <p className="mt-1 font-body text-xs text-muted">Saída mínima: {selectedTour.min}</p>
-              )}
-            </div>
-
+            <p className="mb-6 font-body text-xs text-muted">
+              {selectedTour?.min ? `Saída mínima: ${selectedTour.min}` : 'Escolha quantas pessoas vão no passeio.'}
+            </p>
+            <button
+              onClick={() => setStep('details')}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 font-heading font-bold text-navy transition hover:bg-[#ffbb1a]"
+            >
+              Continuar <ChevronRight size={18} />
+            </button>
+          </div>
+        ) : (
+          /* ---------------- Step 4: details + policy ---------------- */
+          <form onSubmit={submit} className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label className={labelCls}>Seu nome</label>
